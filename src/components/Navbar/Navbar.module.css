@@ -1,0 +1,107 @@
+@import "../../vars.css";
+
+/* Navbar Style */
+.navbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px; /* Padding lebih fleksibel */
+  z-index: 2;
+  margin: 0 auto;
+  width: 100%;
+  background-color: white; /* Tambahkan warna latar belakang agar tetap terlihat saat scroll */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan untuk efek lebih modern */
+}
+
+/* Title */
+.title {
+  font-size: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-primary-1);
+}
+
+/* Menu */
+.menu {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Menu Items (Desktop) */
+.menuItems {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.menuItems a {
+  font-size: 20px;
+  color: var(--color-primary-1);
+  text-decoration: none;
+  transition: color 0.3s ease; /* Efek transisi warna saat hover */
+}
+
+.menuItems a:hover {
+  color: var(--color-secondary-1); /* Warna hover */
+}
+
+/* Tombol Menu Hamburger (Mobile) */
+.menuBtn {
+  display: none;
+}
+
+/* Media Query untuk Mobile */
+@media screen and (max-width: 830px) {
+  /* Navbar Mobile */
+  .navbar {
+    flex-direction: row;
+    padding: 20px;
+  }
+
+  /* Tombol Menu */
+  .menuBtn {
+    display: block;
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+  }
+
+  /* Menu Items Mobile */
+  .menuItems {
+    display: none; /* Sembunyikan menu di awal */
+    position: absolute;
+    top: 70px; /* Posisi menu di bawah navbar */
+    right: 20px;
+    flex-direction: column;
+    gap: 15px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%; /* Menu mengisi 80% layar */
+    z-index: 5;
+  }
+
+  /* Menu Terbuka */
+  .menuItems.menuOpen {
+    display: flex; /* Tampilkan menu saat tombol ditekan */
+  }
+
+  /* Link di Menu Mobile */
+  .menuItems a {
+    font-size: 18px;
+    padding: 10px 0;
+    width: 100%; /* Lebar penuh untuk mempermudah klik */
+    text-align: left;
+  }
+}
+
+/* Tambahan Desktop */
+@media screen and (min-width: 831px) {
+  .navbar {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}

@@ -1,0 +1,74 @@
+@import "../../vars.css";
+
+.container {
+    background-color: var(--color-primary-4);
+    padding: 50px 20px;
+    text-align: center;
+    border-radius: 15px;
+    margin: 50px auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    color: var(--color-primary-2);
+    font-family: var(--font-roboto);
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--color-primary-2);
+    font-family: var(--font-roboto);
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-robot);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-bg);
+    padding: 15px 25px;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.apple {
+    background-color: transparent;
+}
+
+.google {
+    background-color: transparent;
+}
+
+.button:hover {
+    transform: scale(1.25);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+    width: 180px;
+    height: 180px;
+}
+
+@media screen and (max-width: 830px) {
+    .button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,140 @@
+@import "../../vars.css"; /* Mengimpor variabel dari vars.css */
+
+/* Kontainer utama untuk halaman login */
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 450px; /* Sedikit lebih lebar agar tampak lebih rapi di desktop */
+  margin: 0 auto;
+  padding: 25px; /* Menambah padding untuk kenyamanan */
+  background-color: var(--color-bg); /* Warna latar belakang ringan */
+  border-radius: 12px; /* Radius sudut lebih halus */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Efek bayangan lebih lembut */
+  font-family: 'Arial', sans-serif; /* Gunakan font yang konsisten */
+}
+
+/* Judul halaman login */
+.title {
+  font-size: 32px; /* Ukuran font yang lebih besar */
+  font-weight: 600;
+  color: var(--color-primary-2); /* Warna utama */
+  margin-bottom: 20px;
+  text-align: center; /* Membuat teks judul lebih terpusat */
+}
+
+/* Formulir untuk login atau buat akun */
+.formContainer {
+  width: 100%;
+  margin-top: 20px; /* Menambahkan jarak di antara judul dan formulir */
+  color: var(--color-primary-2);
+}
+
+
+.inputField {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px; /* Menambah jarak antar input */
+  border: 1px solid var(--color-primary-2); /* Warna border yang lebih lembut */
+  border-radius: 6px; /* Sudut input yang lebih bulat */
+  font-size: 16px;
+  color: var(--color-text-dark); /* Warna teks */
+  transition: border-color 0.3s ease; /* Efek transisi untuk border */
+}
+
+.inputField:focus {
+  border-color: var(--color-primary-2); /* Mengubah warna border saat fokus */
+  outline: none;
+}
+
+/* Tombol Kirim */
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-primary-2); /* Warna tombol utama */
+  color: white;
+  border: none;
+  border-radius: 6px; /* Sudut tombol lebih halus */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease; /* Efek transisi saat hover */
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-4); /* Warna saat hover */
+}
+
+.submitButton:focus {
+  outline: none; /* Hilangkan outline saat tombol difokuskan */
+}
+
+/* Tautan untuk switch login dan buat akun */
+.switchLink {
+  color: var(--color-primary-2);
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Gambar di bawah judul */
+.heroImg {
+  width: 100%; /* Membuat gambar responsif secara horizontal */
+  max-width: 1200px; /* Menetapkan ukuran maksimum gambar di desktop */
+  height: auto; /* Menjaga proporsi gambar */
+  max-height: 700px; /* Membatasi tinggi maksimum gambar di desktop */
+  margin-top: 30px; /* Memberikan ruang di atas gambar */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsif untuk tampilan mobile */
+@media screen and (max-width: 830px) {
+  .loginContainer {
+    max-width: 350px; /* Menyesuaikan lebar di tampilan mobile */
+    padding: 20px; /* Menyesuaikan padding untuk tampilan kecil */
+  }
+
+  .title {
+    font-size: 28px; /* Menyesuaikan ukuran font pada tampilan mobile */
+    margin-bottom: 15px; /* Memberikan ruang lebih kecil pada mobile */
+  }
+
+  .inputField {
+    font-size: 14px; /* Menyesuaikan ukuran font input pada tampilan mobile */
+  }
+
+  .submitButton {
+    font-size: 14px; /* Menyesuaikan ukuran font tombol pada tampilan mobile */
+  }
+
+  .heroImg {
+    max-width: 100%; /* Gambar menyesuaikan lebar layar kecil */
+    max-height: 400px; /* Membatasi tinggi gambar di tampilan kecil */
+  }
+}
+
+.selectField {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 25px; /* Spacing between the dropdown and the submit button */
+  border: 1px solid var(--color-primary-2);
+  border-radius: 6px;
+  font-size: 16px;
+  color: var(--color-text-dark);
+  transition: border-color 0.3s ease;
+}
+
+.selectField:focus {
+  border-color: var(--color-primary-1); /* Mengubah warna border saat fokus */
+  outline: none;
+}
+
+.errorMessage {
+  color: var(--color-error);
+  font-size: 12px;
+  margin-top: 5px;
+}

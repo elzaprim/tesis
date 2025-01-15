@@ -1,0 +1,18 @@
+:root {
+    /* Colors */
+    --color-bg: #fff;
+    --color-primary-1: #001D3D; /* Warna kuning gelap */
+    --color-primary-2: #003566; /* Warna kuning sedang */
+    --color-primary-3: #CCA000; /* Warna kuning lebih terang */
+    --color-primary-4: #F0CB46; /* Warna kuning pastel */
+    --color-primary-5: #FFF2CC; /* Warna kuning sangat lembut */
+    --color-primary-6: #FFF9E6; /* Warna kuning hampir putih */
+    --color-secondary: #F6F6F6;
+    --color-error: #EB5858;
+    --color-add-1:  rgb(205, 205, 205);
+    --color-add-2: #00356627;
+
+
+    /* Fonts */
+    --font-robot: "Roboto";
+}
