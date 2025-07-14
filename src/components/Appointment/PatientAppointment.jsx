@@ -1,49 +1,103 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import styles from "./PatientAppointment.module.css";
+import { toast } from "react-toastify";
+
+
+const API_BASE = "https://api.sahabatbmeitb.my.id";
 
 const PatientAppointment = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [appointments, setAppointments] = useState([
-    { date: "2024-12-25", note: "Check-up rutin dengan Dr. Amanda" },
-    { date: "2024-12-30", note: "Tes darah dan konsultasi hasil" },
-    { date: "2024-12-05", note: "Kontrol setelah operasi" },
-    { date: "2024-12-15", note: "Pemeriksaan umum" },
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [noRekamMedis, setNoRekamMedis] = useState("");
 
   const navigate = useNavigate();
+  const nik = sessionStorage.getItem("nik");
 
-  // Fungsi untuk menangani perubahan bulan/tahun
+  // Ambil no_rekam_medis berdasarkan nik
+  useEffect(() => {
+    const fetchRekamMedis = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/Patient/${nik}`);
+        const json = await res.json();
+        if (res.ok && json.success) {
+          const data = Array.isArray(json.data) ? json.data[0] : json.data;
+          setNoRekamMedis(data.no_rekam_medis);
+        }
+      } catch (err) {
+        console.error("Gagal fetch pasien:", err);
+      }
+    };
+
+    if (nik) fetchRekamMedis();
+  }, [nik]);
+
+  // Fetch jadwal janji temu
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!noRekamMedis) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/Appointment/${noRekamMedis}`);
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+          const data = Array.isArray(json.data) ? json.data : [json.data];
+          // setAppointments(data);
+
+          // Filter hanya yang disetujui
+          const approved = data.filter((item) => item.status?.toLowerCase() === "disetujui");
+          setAppointments(approved);
+
+
+          // Notifikasi jika ada H-3 atau H-1
+          data.forEach((appt) => {
+            const tanggal = new Date(appt.tanggal).toLocaleDateString("id-ID");
+            if (isTodayNear(appt.tanggal, 3)) {
+              toast.info(`📅 Janji temu Anda H-3: ${tanggal} - ${appt.catatan || "Tidak ada catatan."}`);
+            }
+            if (isTodayNear(appt.tanggal, 1)) {
+              toast.info(`⏰ Janji temu Anda H-1: ${tanggal} - ${appt.catatan || "Tidak ada catatan."}`);
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Gagal fetch appointment:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [noRekamMedis]);
+
   const handleActiveStartDateChange = ({ activeStartDate }) => {
-    setSelectedDate(new Date(activeStartDate)); // Set ke awal bulan aktif
+    setSelectedDate(new Date(activeStartDate));
   };
 
-  // Fungsi untuk menangani perubahan tanggal
   const handleDateChange = (date) => {
-    setSelectedDate(date); // Update selectedDate saat memilih tanggal
+    setSelectedDate(date);
   };
 
-  const handleBackToDashboard = () => {
-    navigate("/guardian-dashboard");
+  const getStartOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
+  const getEndOfMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  const isTodayNear = (dateStr, daysBefore) => {
+    const target = new Date(dateStr);
+    const today = new Date();
+    target.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const diff = (target - today) / (1000 * 60 * 60 * 24);
+    return diff === daysBefore;
   };
 
-  const getStartOfMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1);
-  };
-
-  const getEndOfMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  };
-
-  // Filter janji temu untuk bulan yang dipilih
   const notesForMonth = appointments.filter((appt) => {
-    const appointmentDate = new Date(appt.date);
-    return (
-      appointmentDate >= getStartOfMonth(selectedDate) &&
-      appointmentDate <= getEndOfMonth(selectedDate)
-    );
+    const apptDate = new Date(appt.tanggal);
+    return apptDate >= getStartOfMonth(selectedDate) && apptDate <= getEndOfMonth(selectedDate);
   });
 
   return (
@@ -52,40 +106,70 @@ const PatientAppointment = () => {
 
       <div className={styles.calendarContainer}>
         <Calendar
-          onChange={handleDateChange} // Saat tanggal dipilih
-          onActiveStartDateChange={handleActiveStartDateChange} // Saat bulan/tahun berubah
-          value={selectedDate} // Tanggal yang dipilih
+          onChange={handleDateChange}
+          onActiveStartDateChange={handleActiveStartDateChange}
+          value={selectedDate}
         />
+
+        {/* <Calendar
+          onChange={handleDateChange}
+          onActiveStartDateChange={handleActiveStartDateChange}
+          value={selectedDate}
+          tileClassName={({ date }) => {
+            const match = appointments.find(
+              (appt) =>
+                new Date(appt.tanggal).toDateString() === date.toDateString()
+            );
+            return match ? styles.highlightDate : null;
+          }}
+        /> */}
+
       </div>
 
       <div className={styles.notesContainer}>
-        <h2 className={styles.notesTitle}>
-          Catatan untuk Bulan{" "}
-          {selectedDate.toLocaleString("default", { month: "long", year: "numeric" })}
-        </h2>
-        {notesForMonth.length > 0 ? (
+        <h2 className={styles.notesTitle}>Catatan:</h2>
+
+        {loading ? (
+          <p>Memuat jadwal...</p>
+        ) : notesForMonth.length > 0 ? (
           <ul className={styles.notesList}>
-            {notesForMonth.map((appt, index) => (
-              <li key={index} className={styles.noteItem}>
-                {appt.date} : {appt.note}
-              </li>
-            ))}
+            {notesForMonth
+              .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)) // urutkan terbaru
+              .map((appt, idx) => (
+                <li key={idx} className={styles.noteItem}>
+                  {new Date(appt.tanggal).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}{" "}
+                  - {appt.keterangan || appt.catatan || "Tidak ada catatan."}
+                  {isTodayNear(appt.tanggal, 3) && <span className={styles.tagH3}> (H-3)</span>}
+                  {isTodayNear(appt.tanggal, 1) && <span className={styles.tagH1}> (H-1)</span>}
+                </li>
+              ))}
           </ul>
         ) : (
-          <p className={styles.noNotes}>Tidak ada janji temu untuk bulan ini.</p>
+          <p className={styles.noNotes}>Tidak ada janji temu bulan ini.</p>
         )}
       </div>
 
 
-      {/* Tombol di bawah */}
-      <div className={styles.footerButtons}>
-        <button className={styles.backButton} onClick={() => window.history.back()}>
+      {/* <div className={styles.footerButtons}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
           Kembali
         </button>
-        <button className={styles.logoutButton}>Keluar</button>
-      </div>
+        <button
+          className={styles.logoutButton}
+          onClick={() => {
+            sessionStorage.clear();
+            navigate("/login");
+          }}
+        >
+          Keluar
+        </button>
+      </div> */}
     </div>
   );
-};    
+};
 
 export default PatientAppointment;

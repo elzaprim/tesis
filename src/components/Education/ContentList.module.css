@@ -1,0 +1,146 @@
+@import "../../vars.css";
+
+/* Container Utama */
+.container {
+  padding: 20px;
+  background-color: var(--color-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* Judul Halaman */
+h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--color-primary-2);
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+/* Tabel Konten */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: fixed;
+  word-break: break-word;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+  background-color: var(--color-primary-2);
+  color: white;
+  font-weight: 600;
+  padding: 12px 16px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--color-primary-1);
+  color: var(--color-primary-2);
+  vertical-align: top;
+  background-color: var(--color-bg);
+}
+
+.table td iframe {
+  width: 100%;
+  height: auto;
+  border: none;
+}
+
+.table td a {
+  color: var(--color-primary-1);
+  font-weight: 500;
+  text-decoration: underline;
+  word-break: break-word;
+}
+
+/* Tombol Aksi */
+.table td button {
+  margin: 4px 4px 4px 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.table td button:hover {
+  transform: scale(1.05);
+}
+
+.table td button:first-child {
+  background-color: var(--color-primary-1);
+  color: white;
+}
+
+.table td button:last-child {
+  background-color: var(--color-error);
+  color: white;
+}
+
+/* Footer Buttons */
+.footerButtons {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.footerButtons button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-primary-2);
+  color: var(--color-primary-2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.footerButtons button:hover {
+  background-color: var(--color-primary-3);
+  color: white;
+}
+
+/* Responsif */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .table td button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .footerButtons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerButtons button {
+    width: 100%;
+    font-size: 14px;
+  }
+}

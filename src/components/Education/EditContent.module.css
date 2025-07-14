@@ -1,0 +1,119 @@
+@import "../../vars.css";
+
+.container {
+  padding: 20px;
+  background-color: var(--color-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* Judul Halaman */
+h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--color-primary-2);
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary-2);
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+/* Input dan Select */
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--color-primary-3);
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--color-primary-4);
+  outline: none;
+}
+
+/* Tombol Group */
+.buttonGroup {
+  margin-top: 30px;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  flex-wrap: wrap; /* agar tetap rapi di mobile */
+}
+
+/* Tombol Simpan */
+.saveButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: var(--color-primary-4);
+  color: var(--color-primary-2);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover */
+.saveButton:hover {
+  background-color: var(--color-primary-3);
+  transform: scale(1.03);
+}
+
+/* Tombol Batal */
+.cancelButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: var(--color-error);
+  color: var(--color-secondary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancelButton:hover {
+  background-color: #c0392b;
+  transform: scale(1.03);
+}
+
+
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .buttonGroup {
+    flex-direction: row; /*  ubah jadi row */
+    flex-wrap: wrap;     /* tetap wrap agar tidak overflow */
+    gap: 12px;
+  }
+
+  .saveButton,
+  .cancelButton {
+    width: auto; /* jangan full agar tetap sejajar */
+    flex: 1 1 auto; /*  bisa ikut lebar kontainer */
+  }
+}
+

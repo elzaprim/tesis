@@ -1,0 +1,61 @@
+@import "../../vars.css";
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--color-secondary);
+  color: var(--color-primary-2);
+  border-radius: 8px;
+  font-family: "Segoe UI", sans-serif;
+  text-align: left;
+}
+
+/* Judul */
+.h1 {
+  font-size: 28px;
+  color: var(--color-primary-2);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+
+.faqList {
+  list-style: none;
+  padding: 0;
+}
+
+.faqItem {
+  background-color: var(--color-bg);
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.faqItem strong {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 14px;
+  margin: 16px 0;
+  font-size: 16px;
+  border: 1px solid #ccc; /* <- ubah dari kuning/orange ke abu default */
+  border-radius: 6px;
+  box-sizing: border-box;
+
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Saat input difokuskan */
+.searchInput:focus {
+  border-color: var(--color-primary-2); /* misal biru/tema utama */
+  box-shadow: 0 0 0 2px rgba(100, 150, 250, 0.3);
+}

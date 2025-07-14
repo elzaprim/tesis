@@ -1,0 +1,91 @@
+@import "../../vars.css";
+
+.container {
+  padding: 40px 20px 60px;
+  font-family: "Segoe UI", sans-serif;
+  background-color: var(--color-secondary);
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--color-primary-2);
+}
+
+
+.header {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: var(--color-primary-2);
+}
+
+/* Grid wrapper untuk 2 kotak */
+.cardsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* Card umum */
+.card {
+  background-color: #ffffff;
+  border-left: 8px solid var(--color-primary-2, #2196F3);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  flex: 1 1 480px;
+  max-width: 500px;
+  min-width: 320px;
+}
+
+.card h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: var(--color-primary-1, #222);
+}
+
+.card p {
+  font-size: 16px;
+  color: var(--color-primary-2, #333);
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.card p strong {
+  color: var(--color-primary-1, #000);
+}
+
+.backButton {
+  margin-top: 32px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backButton:hover {
+  background-color: #45a049;
+}
+
+/* Responsive untuk layar kecil */
+@media screen and (max-width: 768px) {
+  .cardsGrid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+}

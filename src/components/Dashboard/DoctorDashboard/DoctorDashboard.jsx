@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./DoctorDashboard.module.css";
 
 const DoctorDashboard = () => {
-  const [userName, setUserName] = useState("dr. Mary Jane, Sp.A(K)");
-  const navigate = useNavigate(); // Inisialisasi useNavigate
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
 
+  // Ambil data user dari sessionStorage
   useEffect(() => {
-    // Simulasi fetch data atau perubahan nama pengguna
-    const timer = setTimeout(() => setUserName("dr. John Doe, Sp.PD"), 1000);
-    return () => clearTimeout(timer); // Membersihkan timer saat komponen unmount
+    const nama = sessionStorage.getItem("nama_lengkap") || "Dokter";
+    setUserName(nama);
   }, []);
 
-  // Daftar menu dashboard dokter
+  // Menu utama dashboard dokter
   const menuItems = [
     { src: "/assets/common/lifesavers.svg", alt: "Overview", label: "Overview", route: "/overview" },
-    { src: "/assets/common/lifesavers-caretaking.svg", alt: "Patient", label: "Data Pasien", route: "/profile-patient-doctor" },
-    { src: "/assets/common/videocall.svg", alt: "Appointment", label: "Janji Temu", route: "/doctor-appointments" }, // Perbarui route
-    { src: "/assets/common/standing.svg", alt: "Chat", label: "Konsultasi", route: "/consultations" },
+    { src: "/assets/common/lifesavers-caretaking.svg", alt: "Data Pasien", label: "Data Pasien", route: "/profile-patient-doctor" },
+    { src: "/assets/common/videocall.svg", alt: "Janji Temu", label: "Janji Temu", route: "/doctor-appointments" },
+    { src: "/assets/common/standing.svg", alt: "Konsultasi", label: "Konsultasi", route: "/consultations" },
   ];
 
-  // Bottom Navigation Items (Logout, Settings)
   const navItems = [
-    { label: "Settings", route: "/settings", className: styles.settingsButton }, // 'settingsButton' class for Settings
-    { label: "Keluar", route: "/logout", className: styles.logoutButton }, // 'logoutButton' class for Logout
+    { label: "Pengaturan", route: "/settings", className: styles.settingsButton },
+    { label: "Keluar", route: "/logout", className: styles.logoutButton },
   ];
 
-  // Komponen fallback untuk gambar
+  // Gambar fallback
   const FallbackImage = ({ src, alt, className, fallback = "/assets/common/default-avatar.svg" }) => (
     <img
       src={src}
@@ -50,13 +49,13 @@ const DoctorDashboard = () => {
         />
       </header>
 
-      {/* Dashboard Menu */}
+      {/* Menu Dashboard */}
       <div className={styles.menuContainer}>
         {menuItems.map((item, index) => (
           <div
-            className={styles.menuItem}
             key={index}
-            onClick={() => navigate(item.route)} // Gunakan useNavigate
+            className={styles.menuItem}
+            onClick={() => navigate(item.route)}
           >
             <div className={styles.icon}>
               <FallbackImage
@@ -71,23 +70,17 @@ const DoctorDashboard = () => {
         ))}
       </div>
 
-      {/* Bottom Navigation */}
+      {/* Navigasi bawah */}
       <nav className={styles.bottomNav}>
-        {/* Tombol Settings */}
-        <div
-          className={`${styles.navItem} ${styles.settingsButton}`}
-          onClick={() => navigate("/settings")}
-        >
-          <span>Pengaturan</span>
-        </div>
-
-        {/* Tombol Keluar */}
-        <div
-          className={`${styles.navItem} ${styles.logoutButton}`}
-          onClick={() => navigate("/logout")}
-        >
-          <span>Keluar</span>
-        </div>
+        {navItems.map((item, index) => (
+          <div
+            key={index}
+            className={`${styles.navItem} ${item.className}`}
+            onClick={() => navigate(item.route)}
+          >
+            <span>{item.label}</span>
+          </div>
+        ))}
       </nav>
     </div>
   );

@@ -1,6 +1,26 @@
-@import "../../vars.css"; /* Import variabel global */
+@import "../../vars.css";
 
-/* Container Utama */
+/* FILTER DROPDOWN STATUS */
+.filterDropdown {
+  width: 50%;
+  min-width: 200px;
+  max-width: 450px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid var(--color-primary-3);
+  background-color: white;
+  color: var(--color-primary-2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filterDropdown:focus {
+  border-color: var(--color-primary-4);
+  box-shadow: 0 0 6px var(--color-primary-4);
+  outline: none;
+}
+
+/* CONTAINER */
 .container {
   padding: 20px;
   background-color: var(--color-secondary);
@@ -8,11 +28,11 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-width: 900px; /* Lebar maksimal desktop */
-  margin: 0 auto; /* Pusatkan tampilan di tengah */
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-/* Header */
+/* HEADER */
 .header {
   text-align: center;
   margin-bottom: 30px;
@@ -25,81 +45,28 @@
   margin: 0;
 }
 
-/* Search and Filter Section */
-.searchSection {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
+/* FILTER SECTION */
 .filterSection {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-}
-
-.filterSection label{
-  font-size: 24px;
-}
-
-.filterSection select{
-  font-size: 16px;
-}
-
-.datePicker,
-.dropdown,
-.searchBar input {
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--color-primary-3);
-  font-size: 14px;
-  background-color: var(--color-primary-5);
-  color: var(--color-primary-1);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.datePicker:focus,
-.dropdown:focus,
-.searchBar input:focus {
-  border-color: var(--color-primary-4);
-  box-shadow: 0 0 8px var(--color-primary-4);
-  outline: none;
-}
-
-.searchBar {
-  display: flex;
   align-items: center;
-  gap: 12px;
 }
 
-.searchBar button {
-  padding: 12px 18px;
-  border: none;
-  background-color: var(--color-primary-4);
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--color-secondary);
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.3s ease;
+.filterSection label {
+  font-size: 20px;
+  color: var(--color-primary-2);
 }
 
-.searchBar button:hover {
-  background-color: var(--color-primary-3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Table */
+/* TABLE */
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
-  border-radius: 8px; /* Rounded corners for the table */
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  text-align: center; /* Center align text in the table */
-  border: none; /* Remove the outer border of the table */
+  text-align: center;
 }
 
 .table thead {
@@ -110,26 +77,25 @@
   color: var(--color-bg);
   font-weight: bold;
   padding: 12px;
-  text-align: center; /* Center align table header text */
-  border-right: 1px solid var(--color-bg); /* Add border to separate columns in the header */
+  text-align: center;
+  border-right: 1px solid var(--color-bg);
 }
 
 .table td {
   padding: 12px;
-  vertical-align: middle; /* Vertically align content */
+  vertical-align: middle;
   background-color: whitesmoke;
   color: var(--color-primary-1);
-  border-right: 1px solid var(--color-bg); /* Add border to separate columns */
+  border-right: 1px solid var(--color-bg);
 }
 
 .table td:last-child,
 .table th:last-child {
-  border-right: none; /* Remove the right border from the last column */
+  border-right: none;
 }
 
-/* Add bottom border to each row */
 .table tbody tr {
-  border-bottom: 1px solid var(--color-bg); /* Border at the bottom of each row */
+  border-bottom: 1px solid var(--color-bg);
 }
 
 .table tbody tr:hover {
@@ -144,52 +110,46 @@
   padding: 20px 0;
 }
 
-
-/* Container for action buttons */
+/* BUTTON ACTION */
 .actionButtonContainer {
-    display: flex;
-    justify-content: center; /* Center the buttons */
-    gap: 10px; /* Space between the buttons */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    align-items: center; /* Center the items vertically */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-/* General action button styling */
 .actionButton {
-  padding: 10px 15px;
+  padding: 10px 14px;
   font-size: 14px;
-  border: none;
-  border-radius: 8px; /* Membuat sudut halus */
+  min-width: 110px;
+  max-width: 130px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease; /* Efek transisi */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+  transition: all 0.3s ease;
 }
 
-.actionButton:hover {
-  transform: translateY(-2px); /* Efek mengangkat */
-  opacity: 0.9;
-}
-
-/* Specific button styles */
 .approveButton {
-  background-color: #099c81; /* Hijau untuk setujui */
-  color: white;
-}
-
-.rejectButton {
-  background-color: var(--color-error); /* Merah untuk tolak */
+  background-color: var(--color-primary-1);
   color: white;
 }
 
 .approveButton:hover {
-  background-color: #026956; /* Warna lebih gelap saat hover */
+  background-color: var(--color-primary-2);
+}
+
+.rejectButton {
+  background-color: var(--color-primary-4);
+  color: var(--color-primary-2);
 }
 
 .rejectButton:hover {
-  background-color: #d32f2f; /* Warna lebih gelap saat hover */
+  background-color: var(--color-primary-3);
 }
 
-/* Modal Styling */
+/* MODAL */
 .modal {
   position: fixed;
   top: 50%;
@@ -202,6 +162,12 @@
   z-index: 1000;
   width: 80%;
   max-width: 500px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .modalContent {
@@ -216,62 +182,51 @@
   gap: 15px;
 }
 
-/* Footer Buttons */
-.footerButtons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.footerButtons button {
-  padding: 14px 22px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-}
-
-.backButton {
-  background-color: var(--color-primary-2);
-  color: var(--color-secondary);
-}
-
-.backButton:hover {
-  background-color: var(--color-primary-3);
-  transform: scale(1.05);
-}
-
-.logoutButton {
-  background-color: var(--color-primary-4);
-  color: var(--color-secondary);
-}
-
-.logoutButton:hover {
-  background-color: var(--color-primary-3);
-  transform: scale(1.05);
-}
-
-/* History Notification Section */
-.notificationSection ul li {
-  font-size: 16px; /* Smaller font size for notifications */
-  color: var(--color-primary-2);
-  margin-bottom: 8px; /* Add spacing between items */
-}
-
-/* History Notification Header */
+/* NOTIFICATION */
 .notificationSection h2 {
-  font-size: 20px; /* Reduced font size for the notification header */
+  font-size: 20px;
   color: var(--color-primary-2);
-  margin-bottom: 10px; /* Add space below the header */
+  margin: 20px 0 10px;
+}
+
+.notificationList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 10px;
 }
 
+.notificationCard {
+  background-color: var(--color-surface);
+  border-left: 5px solid var(--color-primary-3);
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--color-primary-2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
 
-/* Responsive Design */
+.notificationCard:hover {
+  transform: translateY(-2px);
+}
+
+/* TOASTIFY */
+.Toastify__toast--error {
+  background: var(--color-error);
+  color: white;
+}
+
+.Toastify__toast--success {
+  background: var(--color-primary-1);
+  color: white;
+}
+
+/* RESPONSIVE */
 @media screen and (max-width: 830px) {
   .filterSection {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .table th,
@@ -280,32 +235,15 @@
   }
 
   .actionButton {
+    font-size: 13px;
     padding: 8px 12px;
-    font-size: 12px;
+    min-width: 100px;
   }
 
-  /* Stack the action buttons vertically on small screens */
   .actionButtonContainer {
-    flex-direction: column; /* Stack vertically */
-    gap: 15px; /* Add space between stacked buttons */
-  }
-
-  button {
-    width: 100%; /* Membuat tombol memenuhi lebar kontainer */
-    font-size: 18px; /* Ukuran font tombol lebih besar di perangkat mobile */
-  }
-
-  .backButton {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  .footerButtons {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .footerButtons button {
-    margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }

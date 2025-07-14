@@ -1,7 +1,6 @@
-/* Mengimpor variabel dari vars.css */
 @import "../../vars.css";
 
-/* Container Utama */
+/* CONTAINER */
 .container {
   padding: 20px;
   background-color: var(--color-secondary);
@@ -9,11 +8,11 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-width: 900px; /* Lebar maksimal desktop */
-  margin: 0 auto; /* Pusatkan tampilan di tengah */
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-/* Header */
+/* HEADER */
 .header {
   text-align: center;
   margin-bottom: 30px;
@@ -26,105 +25,77 @@
   margin: 0;
 }
 
-/* Search Section */
-.searchSection {
-  margin-bottom: 24px;
+/* FILTER SECTION */
+.filterSection {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.searchSection h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 12px;
+.filterSection label {
+  font-size: 18px;
   color: var(--color-primary-2);
 }
 
-/* Filter Section */
-.filterSection {
-  display: flex;
-  flex-direction: column; /* Elemen tersusun vertikal */
-  gap: 16px; /* Jarak antar elemen */
-  margin-bottom: 16px;
-  align-items: stretch; /* Elemen menyesuaikan lebar container */
-  width: 100%;
-  box-sizing: border-box;
+/* DROPDOWN DAN SEARCH */
+.filterDropdown {
+  width: 50%;
+  min-width: 200px;
+  max-width: 450px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid var(--color-primary-3);
+  background-color: white;
+  color: var(--color-primary-2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Styling for the common input, dropdown, and date picker */
-.filterSection .datePicker,
-.filterSection .dropdown,
-.filterSection .searchBar input {
-  padding: 12px; /* Padding seragam */
-  font-size: 16px; /* Ukuran font seragam */
-  font-family: var(--font-robot); /* Font standar */
-  border: 1px solid var(--color-primary-2); /* Warna border seragam */
-  border-radius: 6px; /* Sudut melengkung lebih halus */
-  background-color: var(--color-bg); /* Warna latar belakang seragam */
-  color: var(--color-primary-1); /* Warna teks seragam */
-  width: 100%; /* Memastikan lebar elemen seragam */
-  box-sizing: border-box; /* Memastikan padding dan border dihitung dalam ukuran total */
+.filterDropdown:focus {
+  border-color: var(--color-primary-4);
+  box-shadow: 0 0 6px var(--color-primary-4);
+  outline: none;
 }
 
-.filterSection .dropdown {
-  appearance: none; /* Menghapus tampilan default dropdown */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23999999' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
+.datePicker {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid var(--color-primary-3);
+  color: var(--color-primary-2);
 }
 
-.filterSection .searchBar {
-  position: relative;
-  display: flex;
-  width: 100%;
-}
-
-.filterSection .searchBar input {
-  padding: 12px 40px 12px 12px; /* Padding agar ikon berada di dalam kotak input */
-  font-size: 16px; /* Ukuran font seragam */
-  font-family: var(--font-robot); /* Font standar */
-  border: 1px solid var(--color-primary-2); /* Warna border seragam */
-  border-radius: 6px; /* Sudut melengkung lebih halus */
-  background-color: var(--color-bg); /* Warna latar belakang seragam */
-  color: var(--color-primary-1); /* Warna teks seragam */
-  flex: 1; /* Ukuran fleksibel */
-  min-width: 200px; /* Lebar minimum agar ideal */
-  box-sizing: border-box; /* Memastikan padding dan border dihitung dalam ukuran total */
-}
-
-.filterSection .searchBar button {
-  position: absolute;
-  top: 50%;
-  right: 12px; /* Menempatkan ikon di kanan dalam kotak input */
-  transform: translateY(-150%); /* Memastikan ikon berada di tengah secara vertikal */
-  padding: 0;
-  border: none;
-  background-color: transparent; /* Tombol transparan */
-  color: var(--color-primary-3); /* Warna ikon */
-  cursor: pointer;
+/* SEARCH BAR */
+.searchBar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 20px; /* Ukuran ikon seragam */
-  height: 20px;
-  transition: color 0.3s ease-in-out;
+  gap: 8px;
 }
 
-.filterSection .searchBar button:hover {
-  color: var(--color-primary-3); /* Warna ikon saat hover */
+.searchBar input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary-3);
+  font-size: 14px;
 }
 
+.searchBar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 
-
-/* Table */
+/* TABLE */
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
-  border-radius: 8px; /* Rounded corners for the table */
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  text-align: center; /* Center align text in the table */
-  border: none; /* Remove the outer border of the table */
+  text-align: center;
 }
 
 .table thead {
@@ -135,26 +106,25 @@
   color: var(--color-bg);
   font-weight: bold;
   padding: 12px;
-  text-align: center; /* Center align table header text */
-  border-right: 1px solid var(--color-bg); /* Add border to separate columns in the header */
+  text-align: center;
+  border-right: 1px solid var(--color-bg);
 }
 
 .table td {
   padding: 12px;
-  vertical-align: middle; /* Vertically align content */
+  vertical-align: middle;
   background-color: whitesmoke;
   color: var(--color-primary-1);
-  border-right: 1px solid var(--color-bg); /* Add border to separate columns */
+  border-right: 1px solid var(--color-bg);
 }
 
 .table td:last-child,
 .table th:last-child {
-  border-right: none; /* Remove the right border from the last column */
+  border-right: none;
 }
 
-/* Add bottom border to each row */
 .table tbody tr {
-  border-bottom: 1px solid var(--color-bg); /* Border at the bottom of each row */
+  border-bottom: 1px solid var(--color-bg);
 }
 
 .table tbody tr:hover {
@@ -169,85 +139,170 @@
   padding: 20px 0;
 }
 
-/* Reschedule Button */
-.rescheduleButton {
-  padding: 8px 12px;
-  font-size: 15px;
-  font-weight: none;
-  border: none;
-  border-radius: 4px;
-  background-color: var(--color-error);
-  color: var(--color-bg);
-  cursor: pointer;
+/* ACTION BUTTON */
+.actionButtonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actionButton {
+  padding: 10px 14px;
+  font-size: 14px;
+  min-width: 110px;
+  max-width: 130px;
   text-align: center;
-  display: inline-block;
-  transition: background-color 0.3s ease-in-out;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rescheduleButton {
+  background-color: var(--color-primary-4);
+  color: var(--color-primary-2);
 }
 
 .rescheduleButton:hover {
-  background-color: #d32f2f;
-}
-
-/* Reschedule Button Active State */
-.rescheduleButton:focus,
-.rescheduleButton:active {
-  outline: none; /* Clear visual feedback when focused or active */
-  background-color: var(--color-secondary);  /* Slight change in background */
-}
-
-/* Footer Buttons */
-.footerButtons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.footerButtons button {
-  padding: 12px 20px;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-}
-
-.backButton {
-  background-color: var(--color-primary-2);
-  color: var(--color-secondary);
-}
-
-.backButton:hover {
-  background-color: var(--color-primary-1);
-}
-
-.logoutButton {
-  background-color: var(--color-primary-4);
-  color: var(--color-secondary);
-}
-
-.logoutButton:hover {
   background-color: var(--color-primary-3);
 }
 
-/* Responsiveness */
+.addAppointmentButton {
+  background-color: var(--color-primary-1);
+  color: white;
+}
+
+.addAppointmentButton:hover {
+  background-color: var(--color-primary-2);
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-secondary);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  width: 80%;
+  max-width: 500px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.modalContent input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary-3);
+  font-size: 14px;
+}
+
+/* TOAST */
+.Toastify__toast--error {
+  background: var(--color-error);
+  color: white;
+}
+
+.Toastify__toast--success {
+  background: var(--color-primary-1);
+  color: white;
+}
+
+/* RESPONSIVE */
 @media screen and (max-width: 830px) {
   .filterSection {
-    flex-direction: column; /* Tetap vertikal untuk layar kecil */
-    align-items: stretch;
-  }
-
-  .filterSection .datePicker,
-  .filterSection .dropdown,
-  .filterSection .searchBar input {
-    width: 100%; /* Elemen memenuhi lebar penuh */
-    margin-bottom: 10px; /* Jarak antar elemen */
-  }
-
-  .filterSection .searchBar {
-    width: 100%;
-  }
-
-  .footerButtons {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
+
+  .table th,
+  .table td {
+    font-size: 12px;
+  }
+
+  .actionButton {
+    font-size: 13px;
+    padding: 8px 12px;
+    min-width: 100px;
+  }
+
+  .actionButtonContainer {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* Tambahan Spasi Antara Elemen */
+
+.sectionSpacing {
+  margin-bottom: 24px;
+}
+
+.addAppointmentSection {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid var(--color-primary-3);
+}
+
+.addAppointmentSection input {
+  margin-bottom: 16px;
+}
+
+/* Perbaikan Input */
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary-3);
+  font-size: 14px;
+  color: var(--color-primary-2);
+}
+
+/* Tombol Tambah */
+.addButton {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: var(--color-primary-2);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.addButton:hover {
+  background-color: var(--color-primary-1);
 }

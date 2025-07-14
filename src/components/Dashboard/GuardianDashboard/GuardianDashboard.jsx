@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./GuardianDashboard.module.css";
 import { useNavigate } from "react-router-dom";
 
-const GuardianDashboard = ({ userName = "Guest" }) => {
+const GuardianDashboard = () => {
+  const [userName, setUserName] = useState("Guest");
   const navigate = useNavigate();
 
-  // Daftar menu dashboard
+  useEffect(() => {
+    const name = sessionStorage.getItem("nama_lengkap");
+    if (name) setUserName(name);
+  }, []);
+
+  // Menu dashboard pasien
   const menuItems = [
+    {
+      src: "/assets/common/lifesavers-caretaking.svg",
+      alt: "Profil Pasien",
+      label: "Profil Pasien",
+      route: "/profil-pasien",
+    },
     {
       src: "/assets/common/stomach.svg",
       alt: "Patient Symptoms",
@@ -35,11 +47,10 @@ const GuardianDashboard = ({ userName = "Guest" }) => {
       src: "/assets/common/frontdesk.svg",
       alt: "Finding Content",
       label: "FAQ dan Edukasi",
-      route: "/faq-education",
+      route: "/guardian-education",
     },
   ];
 
-  // Fungsi untuk navigasi saat menu diklik
   const handleMenuClick = (route) => {
     navigate(route);
   };
@@ -52,7 +63,7 @@ const GuardianDashboard = ({ userName = "Guest" }) => {
           👋 Hi, <span className={styles.userName}>{userName}!</span>
         </h1>
         <img
-          src="/assets/icon/pp-1.svg" // Avatar user
+          src="/assets/icon/pp-1.svg"
           alt="User Avatar"
           className={styles.avatar}
           onError={(e) => (e.target.src = "/assets/common/default-avatar.svg")}

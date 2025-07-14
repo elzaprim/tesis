@@ -1,0 +1,131 @@
+@import "../../vars.css";
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+h1 {
+  font-size: 28px;
+  text-align: left; /* optional: agar sejajar kiri seperti FAQ */
+  color: var(--color-primary-2);
+  margin-bottom: 30px;
+}
+
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.card {
+  background-color: var(--color-secondary); /* seperti FAQ */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary-2);
+}
+
+.source {
+  font-size: 14px;
+  color: #444; /* lebih tegas dari #666 */
+  background-color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.link {
+  font-size: 14px;
+  color: var(--color-primary-2);
+  font-weight: 500;
+  margin-top: 4px;
+  text-decoration: underline;
+  display: inline-block;
+}
+
+.footerButtons {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.footerButtons button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-primary-2);
+  color: var(--color-primary-2);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    text-align: left;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .source {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+
+  .link {
+    font-size: 13px;
+  }
+
+  .footerButtons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerButtons button {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .embedContainer {
+    padding-bottom: 56.25%;
+    height: 0;
+    position: relative;
+  }
+
+  .embedContainer iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+}

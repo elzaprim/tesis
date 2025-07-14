@@ -1,48 +1,145 @@
+@import "../../vars.css";
+
+/* Container Utama */
 .container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-secondary, #f0f0f0);
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--color-primary-1, #333);
+}
+
+.header h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+/* Patient Detail Section */
+.patientDetail {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+}
+
+.patientDetail p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.patientDetail strong {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Diagnosis Section */
+.diagnosisSection {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+}
+
+.diagnosisSection h2 {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.diagnosisItem {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  background-color: #fff;
+}
+
+.diagnosisItem p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+/* Tombol Back dan Histori */
+.backButton,
+.historyButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.historyButton {
+  background-color: #2196F3;
+}
+
+.backButton:hover {
+  background-color: #45a049;
+}
+
+.historyButton:hover {
+  background-color: #1976D2;
+}
+
+/* Responsiveness */
+@media screen and (max-width: 830px) {
   .header h2 {
-    font-size: 24px;
-    color: #333;
+    font-size: 20px;
   }
   
-  .patientDetail {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
+  .patientDetail,
+  .diagnosisSection {
+    padding: 15px;
   }
   
-  .patientDetail p {
-    font-size: 16px;
-    margin-bottom: 10px;
+  .patientDetail p,
+  .diagnosisItem p {
+    font-size: 14px;
   }
   
-  .patientDetail strong {
-    font-weight: bold;
-    color: #333;
+  .backButton,
+  .historyButton {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header h2 {
+    font-size: 18px;
   }
   
-  .backButton {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
+  .patientDetail,
+  .diagnosisSection {
+    padding: 10px;
   }
   
-  .backButton:hover {
-    background-color: #45a049;
+  .patientDetail p,
+  .diagnosisItem p {
+    font-size: 13px;
   }
   
+  .backButton,
+  .historyButton {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

@@ -10,13 +10,32 @@
   flex-direction: column;
   max-width: 900px; /* Menambahkan batas lebar maksimal */
   margin: 0 auto; /* Membuat container berada di tengah */
+  font-family: "Segoe UI", sans-serif;
 }
 
+
+/* Judul */
 .title {
-  font-size: 32px;
+  font-size: 28px;
+  color: var(--color-primary-2);
   font-weight: bold;
-  text-align: center; /* Memastikan judul berada di tengah */
-  margin-bottom: 10px; /* Memberikan jarak antara judul dan elemen di bawahnya */
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Ubah gaya hari ini di kalender */
+.react-calendar__tile--now {
+  background: var(--color-primary-4) !important; /* ganti dengan warna yang kamu suka */
+  color: var(--color-primary-2) !important;
+  border-radius: 50% !important;
+  font-weight: bold;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover ketika hari ini */
+.react-calendar__tile--now:hover {
+  background: var(--color-primary-3) !important;
+  color: var(--color-primary-2) !important;
 }
 
 .calendarContainer {
@@ -105,6 +124,25 @@
 .logoutButton:hover {
   background-color: var(--color-primary-3);
 }
+
+.tagH3 {
+  background-color: #ffc107;
+  color: black;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+.tagH1 {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
 
 /* Responsif: Menyesuaikan layout untuk perangkat lebih kecil */
 @media screen and (max-width: 830px) {

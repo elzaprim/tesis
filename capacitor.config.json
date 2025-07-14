@@ -1,0 +1,10 @@
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.example.myapp',
+  appName: 'react-cancer-app',
+  webDir: 'dist',   // ganti jika build‑folder‑mu beda
+  bundledWebRuntime: false
+};
+
+export default config;

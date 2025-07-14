@@ -25,6 +25,47 @@
   margin: 0;
 }
 
+/* Filter Section */
+/* Filter Section */
+.filterWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filterButtonsWrapper {
+  display: flex;
+  gap: 1rem; /* Space between the buttons */
+  justify-content: flex-start; /* Align the buttons to the left */
+}
+
+.resetButton,
+.exportButton {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background-color: var(--color-primary-2);
+  color: var(--color-secondary);
+  transition: background-color 0.3s ease;
+}
+
+.resetButton:hover,
+.exportButton:hover {
+  background-color: var(--color-primary-1);
+}
+
+.exportButton {
+  background-color: var(--color-add-2);
+  color: var(--color-primary-2);
+}
+
+.exportButton:hover {
+  background-color: var(--color-add-1);
+}
+
+
 /* Table */
 .table {
   width: 100%;
@@ -32,33 +73,32 @@
   margin-top: 16px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Tambahkan untuk tabel responsif */
+  overflow-x: auto;
   text-align: center;
-  border: none;
 }
 
 .table thead {
   background-color: var(--color-primary-2);
 }
 
+.table th, .table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
 .table th {
   color: var(--color-bg);
   font-weight: bold;
-  padding: 12px;
-  text-align: center;
-  border-right: 1px solid var(--color-bg);
 }
 
 .table td {
-  padding: 12px;
-  vertical-align: middle;
   background-color: whitesmoke;
   color: var(--color-primary-1);
-  border-right: 1px solid var(--color-bg);
 }
 
 .table tbody tr:hover {
-  background-color: var(--color-highlight); /* Warna highlight */
+  background-color: var(--color-highlight);
   transition: background-color 0.3s ease;
 }
 
@@ -66,19 +106,40 @@
 .viewDetailsButton {
   padding: 10px 16px;
   font-size: 15px;
-  font-weight: 600; /* Gunakan font tebal untuk tombol */
+  font-weight: 600;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: var(--color-add-2);
   color: var(--color-primary-2);
   cursor: pointer;
   text-align: center;
   display: inline-block;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
 }
 
 .viewDetailsButton:hover {
   background-color: var(--color-add-1);
+  transform: scale(1.05);
+}
+
+/* Tombol Histori Data Pasien */
+.historyButton {
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-add-2);
+  color: var(--color-primary-2);
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.historyButton:hover {
+  background-color: var(--color-add-1);
+  transform: scale(1.05);
 }
 
 /* Footer Buttons */
@@ -97,9 +158,23 @@
   transition: background-color 0.3s ease;
 }
 
+/* Wrapper untuk tombol kembali */
+.backButtonWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Tombol Kembali */
 .backButton {
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
   background-color: var(--color-primary-2);
   color: var(--color-secondary);
+  transition: background-color 0.3s ease;
 }
 
 .backButton:hover {
@@ -117,10 +192,13 @@
 
 /* Responsiveness */
 @media screen and (max-width: 830px) {
+  .filterGroup {
+      min-width: 100%;
+    }
   .table {
     font-size: 12px;
     margin-top: 10px;
-    overflow-x: auto; /* Pastikan tabel tetap responsif */
+    overflow-x: auto;
   }
 
   .footerButtons {
@@ -129,10 +207,69 @@
   }
 
   .footerButtons button {
-    margin-bottom: 10px; /* Beri jarak antar tombol */
+    margin-bottom: 10px;
   }
 
   .header h1 {
     font-size: 24px;
   }
+
+  .viewDetailsButton, .historyButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .table {
+    font-size: 11px;
+  }
+
+  .viewDetailsButton, .historyButton {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+}
+
+
+.addButton {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background-color: var(--color-success, #28a745); /* fallback hijau */
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.addButton:hover {
+  background-color: var(--color-success-dark, #218838);
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.pageButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.pageButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-weight: bold;
 }

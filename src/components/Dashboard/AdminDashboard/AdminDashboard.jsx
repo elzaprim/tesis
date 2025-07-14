@@ -9,17 +9,27 @@ const AdminDashboard = () => {
   const [userName, setUserName] = useState(""); // Store dynamic username
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   // Simulate fetching user data (can be replaced with real data from API or context)
+  //   setUserName("Admin Cantik"); // Replace this with actual data fetching logic
+  // }, []);
+
   useEffect(() => {
-    // Simulate fetching user data (can be replaced with real data from API or context)
-    setUserName("Admin Cantik"); // Replace this with actual data fetching logic
-  }, []);
+  const name = sessionStorage.getItem("nama_lengkap");
+  if (name) {
+    setUserName(name);
+  } else {
+    setUserName("Admin"); // fallback default
+  }
+}, []);
+
 
   const menuItems = [
     {
       src: "/assets/common/lifesavers-caretaking.svg",
       alt: "Patient",
       label: "Data Pasien",
-      route: "/admin-patients"
+      route: "/profile-patient-admin"
     },
     {
       src: "/assets/common/standing.svg",

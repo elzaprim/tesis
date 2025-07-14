@@ -1,18 +1,25 @@
 :root {
-    /* Colors */
-    --color-bg: #fff;
-    --color-primary-1: #001D3D; /* Warna kuning gelap */
-    --color-primary-2: #003566; /* Warna kuning sedang */
-    --color-primary-3: #CCA000; /* Warna kuning lebih terang */
-    --color-primary-4: #F0CB46; /* Warna kuning pastel */
-    --color-primary-5: #FFF2CC; /* Warna kuning sangat lembut */
-    --color-primary-6: #FFF9E6; /* Warna kuning hampir putih */
-    --color-secondary: #F6F6F6;
-    --color-error: #EB5858;
-    --color-add-1:  rgb(205, 205, 205);
-    --color-add-2: #00356627;
+  /* Backgrounds & Surfaces */
+  --color-bg: #fff;
+  --color-surface: #f9f9f9;
 
+  /* Primary Colors */
+  --color-primary-1: #6c948c;   /* Hijau Abu */
+  --color-primary-2: #323a3c;   /* Abu Gelap */
+  --color-primary-3: #ffbd59;   /* Kuning Terang */
+  --color-primary-4: #f3d493;   /* Kuning Muda */
+  --color-primary-5: #9bbb93;   /* Hijau Pucat */
+  --color-primary-6: #e4b797;   /* Peach */
 
-    /* Fonts */
-    --font-robot: "Roboto";
+  /* Secondary & Accent */
+  --color-secondary: #ebeae3;   /* Abu Putih */
+  --color-add-1: #cdcdcd;       /* Abu Netral */
+  --color-add-2: #cbecf1;       /* Biru Pastel */
+
+  /* Status Colors */
+  --color-error: #da7d7b;
+
+  /* Fonts */
+  --font-robot: "Roboto", sans-serif;
 }
+
