@@ -106,6 +106,8 @@ const ContentList = () => {
       {/* <div className={styles.footerButtons}>
         <button onClick={() => navigate("/admin-education")}>Kembali</button>
       </div> */}
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+
     </div>
   );
 };

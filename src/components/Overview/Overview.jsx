@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Overview.module.css";
+import { useNavigate } from "react-router-dom";
+
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -34,6 +36,12 @@ const Overview = () => {
   const [barSummary, setBarSummary] = useState({});
   const [pieSummary, setPieSummary] = useState({});
 
+  const [totalAbandon, setTotalAbandon] = useState(0);
+  const [doctorAbandon, setDoctorAbandon] = useState(0);
+
+  const navigate = useNavigate();
+  
+
   const currentUser = {
     nama: sessionStorage.getItem("nama_lengkap"),
     role: sessionStorage.getItem("role"),
@@ -55,6 +63,15 @@ const Overview = () => {
 
       const condData = condRes.data.data;
       const appData = appRes.data.data;
+
+      const abandonAll = appData.filter((app) => app.abandon === "ya");
+      const abandonByDoctor = abandonAll.filter(
+        (app) => app.nama_dokter === currentUser.nama
+      );
+
+      setTotalAbandon(new Set(abandonAll.map((a) => a.no_rekam_medis)).size);
+      setDoctorAbandon(new Set(abandonByDoctor.map((a) => a.no_rekam_medis)).size);
+
 
       const allPatientMap = {};
       const doctorPatientMap = {};
@@ -168,6 +185,13 @@ const Overview = () => {
             value={doctorPatients.toLocaleString()}
           />
         )}
+        <Card title="Total Pasien Abandon" value={totalAbandon.toLocaleString()} />
+        {currentUser.role === "dokter" && (
+          <Card
+            title={"Total Pasien Abandon (" + currentUser.nama + ")"}
+            value={doctorAbandon.toLocaleString()}
+          />
+        )}
       </div>
 
       <div className={styles.summaryBox}>
@@ -199,6 +223,8 @@ const Overview = () => {
           </div>
         </div>
       )}
+    <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+
     </div>
   );
 };
@@ -251,7 +277,7 @@ const PieChart = ({ data }) => (
         </Pie>
         <Tooltip />
       </RechartsPieChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer>  
   </div>
 );
 

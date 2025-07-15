@@ -5,6 +5,8 @@ import styles from "./DoctorAppointment.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Swal from 'sweetalert2';
+
 const API_BASE_URL = "/api";
 
 const DoctorAppointment = () => {
@@ -20,9 +22,16 @@ const DoctorAppointment = () => {
   const [newRekamMedis, setNewRekamMedis] = useState("");
   const [newAddDate, setNewAddDate] = useState("");
 
-  // const doctorName = localStorage.getItem("nama_dokter");
+
   const doctorName = sessionStorage.getItem("nama_lengkap");
 
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState({
+    tanggal: "",
+    status: "",
+    kehadiran: "",
+    keterangan: ""
+  });
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -44,10 +53,26 @@ const DoctorAppointment = () => {
     fetchAppointments();
   }, [doctorName]);
 
+  // const handleReschedule = (appointment) => {
+  //   setSelectedAppointment(appointment);
+  //   setShowModal(true);
+  // };
+
   const handleReschedule = (appointment) => {
+    const today = new Date();
+    const appointmentDate = new Date(appointment.tanggal);
+    const sudahLewat = appointmentDate < today;
+    const sudahHadir = appointment.kehadiran?.toLowerCase() === "hadir";
+
+    if (sudahLewat && sudahHadir) {
+      toast.error("Janji temu ini tidak bisa dijadwal ulang karena pasien sudah hadir dan tanggal telah lewat.");
+      return;
+    }
+
     setSelectedAppointment(appointment);
     setShowModal(true);
   };
+
 
   const handleSubmitReschedule = async () => {
     if (!newDate) return toast.error("Tanggal baru harus diisi.");
@@ -107,14 +132,80 @@ const DoctorAppointment = () => {
     }
   };
 
+  const handleEdit = (appointment) => {
+    setSelectedAppointment(appointment);
+    setEditData({
+      tanggal: appointment.tanggal || "",
+      status: appointment.status || "",
+      kehadiran: appointment.kehadiran || "",
+      keterangan: appointment.keterangan || ""
+    });
+    setEditMode(true);
+  };
+
+  const handleSubmitEdit = async () => {
+    try {
+      const payload = {
+        ...selectedAppointment,
+        ...editData,
+        kehadiran: editData.kehadiran === "" ? null : editData.kehadiran,
+        keterangan: editData.keterangan === "" ? null : editData.keterangan,
+      };
+
+      await axios.put(`${API_BASE_URL}/Appointment/update/${selectedAppointment.id}`, payload);
+
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.id === selectedAppointment.id ? { ...a, ...payload } : a
+        )
+      );
+
+      toast.success("Janji temu berhasil diperbarui.");
+      setEditMode(false);
+      setSelectedAppointment(null);
+    } catch (err) {
+      toast.error("Gagal memperbarui janji temu.");
+      console.error("DETAIL ERROR:", err.response?.data || err.message);
+    }
+  };
+
+  const handleDeleteAppointment = async () => {
+    const result = await Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Data janji temu ini akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya, hapus",
+      cancelButtonText: "Batal"
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await axios.get(`${API_BASE_URL}/Appointment/delete/${selectedAppointment.id}`);
+      setAppointments((prev) =>
+        prev.filter((a) => a.id !== selectedAppointment.id)
+      );
+      toast.success("Janji temu berhasil dihapus.");
+      setEditMode(false);
+      setSelectedAppointment(null);
+    } catch (err) {
+      toast.error("Gagal menghapus janji temu.");
+      console.error("DETAIL ERROR:", err.response?.data || err.message);
+    }
+  };
 
   const filteredAppointments = appointments.filter((appointment) => {
     const matchDate = filterDate ? appointment.tanggal === filterDate : true;
     const matchText = searchTerm
       ? filterType === "name"
         ? appointment.nama_lengkap?.toLowerCase().includes(searchTerm.toLowerCase())
-        : filterType === "diagnosis"
-        ? appointment.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase())
+        : filterType === "rekam"
+        ? appointment.no_rekam_medis?.toLowerCase().includes(searchTerm.toLowerCase())
+        : filterType === "status"
+        ? appointment.status?.toLowerCase().includes(searchTerm.toLowerCase())
         : true
       : true;
     return matchDate && matchText;
@@ -133,6 +224,7 @@ const DoctorAppointment = () => {
           onChange={(e) => setFilterDate(e.target.value)}
           className={styles.filterDropdown}
         />
+
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
@@ -140,8 +232,11 @@ const DoctorAppointment = () => {
         >
           <option value="">Filter</option>
           <option value="name">Nama</option>
-          <option value="diagnosis">Diagnosis</option>
+          <option value="rekam">No Rekam Medis</option>
+          <option value="status">Status</option>
         </select>
+
+
         <input
           type="text"
           placeholder="Cari..."
@@ -151,16 +246,19 @@ const DoctorAppointment = () => {
         />
       </div>
 
-      <table className={styles.table}>
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
         <thead>
           <tr>
             <th>Nama Pasien</th>
             <th>No Rekam Medis</th>
             <th>Tanggal</th>
             <th>Status</th>
+            <th>Kehadiran</th>
             <th>Aksi</th>
           </tr>
         </thead>
+
         <tbody>
           {filteredAppointments.length > 0 ? (
             filteredAppointments.map((a) => (
@@ -169,25 +267,31 @@ const DoctorAppointment = () => {
                 <td>{a.no_rekam_medis}</td>
                 <td>{a.tanggal}</td>
                 <td>{a.status}</td>
+                <td>{a.kehadiran || "-"}</td> {/* jika null, tampilkan "-" */}
                 <td>
                   <div className={styles.actionButtonContainer}>
+
                     <button
-                      onClick={() => handleReschedule(a)}
+                      onClick={() => handleEdit(a)}
                       className={`${styles.actionButton} ${styles.approveButton}`}
                     >
-                      Reschedule
+                      Edit
                     </button>
+
                   </div>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className={styles.noData}>Tidak ada janji temu ditemukan.</td>
+              <td colSpan="6" className={styles.noData}>Tidak ada janji temu ditemukan.</td>
             </tr>
           )}
         </tbody>
-      </table>
+
+
+        </table>
+      </div>
 
       <div className={styles.addAppointmentSection}>
         <h2>Tambah Janji Temu Baru</h2>
@@ -228,6 +332,64 @@ const DoctorAppointment = () => {
         </div>
       )}
 
+      {editMode && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <h3>Edit Janji Temu</h3>
+
+            <label>Tanggal:</label>
+            <input
+              type="date"
+              value={editData.tanggal}
+              onChange={(e) => setEditData({ ...editData, tanggal: e.target.value })}
+            />
+
+            <label>Status:</label>
+            <select
+              value={editData.status}
+              onChange={(e) => setEditData({ ...editData, status: e.target.value })}
+            >
+              <option value="">-- Pilih Status --</option>
+              <option value="request">request</option>
+              <option value="disetujui">disetujui</option>
+              <option value="tidak disetujui">tidak disetujui</option>
+            </select>
+
+            <label>Kehadiran:</label>
+            <select
+              value={editData.kehadiran}
+              onChange={(e) => setEditData({ ...editData, kehadiran: e.target.value })}
+            >
+              <option value="">Kosongkan</option>
+              <option value="hadir">Hadir</option>
+              <option value="tidak hadir">Tidak Hadir</option>
+            </select>
+
+
+            <label>Keterangan (boleh dikosongkan):</label>
+            <textarea
+              value={editData.keterangan}
+              placeholder="Opsional"
+              onChange={(e) => setEditData({ ...editData, keterangan: e.target.value })}
+            />
+
+            <div className={styles.modalActions}>
+              <button onClick={handleSubmitEdit} className={styles.submitButton}>
+                Simpan Perubahan
+              </button>
+              <button onClick={handleDeleteAppointment} className={styles.deleteButton}>
+                Hapus Janji Temu
+              </button>
+              <button onClick={() => setEditMode(false)} className={styles.cancelButton}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+      
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );

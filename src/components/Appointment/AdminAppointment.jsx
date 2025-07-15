@@ -170,7 +170,7 @@ const AdminAppointment = () => {
           >
             <option value="">Semua</option>
             <option value="request">Permintaan Awal</option>
-            <option value="reschedule">Butuh Penjadwalan Ulang</option>
+            <option value="reschedule">Penjadwalan Ulang</option>
             <option value="disetujui">Disetujui</option>
             <option value="tidak disetujui">Ditolak</option>
           </select>
@@ -262,6 +262,8 @@ const AdminAppointment = () => {
           </div>
         </div>
       )}
+
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
       <ToastContainer position="top-right" autoClose={3000} />
 

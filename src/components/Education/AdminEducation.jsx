@@ -36,6 +36,9 @@ const AdminEducation = () => {
           Tambah Konten Baru
         </button>
       </div>
+
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+      
     </div>
   );
 };

@@ -60,12 +60,8 @@ const PatientContentList = () => {
           </div>
         ))}
       </div>
-
-      {/* <div className={styles.footerButtons}>
-        <button onClick={() => navigate("/guardian-education")}>
-          ⬅ Kembali
-        </button>
-      </div> */}
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+ 
     </div>
   );
 };

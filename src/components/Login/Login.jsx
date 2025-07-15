@@ -11,6 +11,7 @@ export const Login = () => {
   const [role, setRole] = useState('');
   const [formData, setFormData] = useState({
     name: '',
+    username: '', // tambahkan ini
     nip: '',
     bpjs: '',
     email: '',

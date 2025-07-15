@@ -105,6 +105,7 @@ const AddContent = () => {
         </button>
       </div>
 
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
 
       {/* <div className={styles.footerButtons}>

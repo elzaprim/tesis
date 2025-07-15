@@ -1,27 +1,79 @@
-// AdminDashboard.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styles from "./AdminDashboard.module.css";
-import UserInfo from "../../list/userInfo/UserInfo"; // Jalur relatif ke UserInfo.jsx
-import ChatList from "../../list/chatList/ChatList"; // Jalur relatif ke ChatList.jsx
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminDashboard = () => {
-  const [userName, setUserName] = useState(""); // Store dynamic username
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Simulate fetching user data (can be replaced with real data from API or context)
-  //   setUserName("Admin Cantik"); // Replace this with actual data fetching logic
-  // }, []);
+  const [toastShown, setToastShown] = useState(false); // flag agar toast hanya muncul sekali
 
   useEffect(() => {
-  const name = sessionStorage.getItem("nama_lengkap");
-  if (name) {
-    setUserName(name);
-  } else {
-    setUserName("Admin"); // fallback default
-  }
-}, []);
+    const name = sessionStorage.getItem("nama_lengkap");
+    if (name) {
+      setUserName(name);
+    } else {
+      setUserName("Admin");
+    }
+  }, []);
+
+  useEffect(() => {
+    const checkAbandonPatients = async () => {
+      try {
+        const res = await axios.get("/api/Appointment");
+        if (res.data.success) {
+          const today = new Date();
+          const data = res.data.data;
+
+          // Ambil data terbaru berdasarkan no_rekam_medis
+          const latestByRekamMedis = {};
+          data.forEach((item) => {
+            const key = item.no_rekam_medis;
+            const tgl = new Date(item.tanggal);
+            if (!latestByRekamMedis[key] || tgl > new Date(latestByRekamMedis[key].tanggal)) {
+              latestByRekamMedis[key] = item;
+            }
+          });
+
+          const filtered = Object.values(latestByRekamMedis);
+
+          // Hitung yang abandon === "ya"
+          const abandonCount = filtered.reduce((count, item) => {
+            let abandonStatus = item.abandon;
+            if (!abandonStatus) {
+              const appointmentDate = new Date(item.tanggal);
+              const kehadiran = item.kehadiran?.toLowerCase();
+              const selisihMinggu =
+                (today - appointmentDate) / (1000 * 60 * 60 * 24 * 7);
+              abandonStatus =
+                kehadiran === "tidak hadir" && selisihMinggu > 4 ? "ya" : "tidak";
+            }
+            return abandonStatus === "ya" ? count + 1 : count;
+          }, 0);
+
+          if (abandonCount > 0) {           
+            toast.warn(`⚠️ Ada ${abandonCount} pasien dengan status abandon!`, {
+              toastId: "abandon-warning", // tambahkan toastId unik di sini
+
+              onClick: () => navigate("/abandon-page"),
+              position: "top-right",
+              autoClose: 5000,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "colored",
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Gagal cek data abandon:", err);
+      }
+    };
+
+    checkAbandonPatients();
+  }, []);
 
 
   const menuItems = [
@@ -29,25 +81,19 @@ const AdminDashboard = () => {
       src: "/assets/common/lifesavers-caretaking.svg",
       alt: "Patient",
       label: "Data Pasien",
-      route: "/profile-patient-admin"
-    },
-    {
-      src: "/assets/common/standing.svg",
-      alt: "Chat",
-      label: "Konsultasi",
-      route: "/admin-consultations"
+      route: "/profile-patient-admin",
     },
     {
       src: "/assets/common/videocall.svg",
       alt: "Appointment",
       label: "Janji Temu",
-      route: "/admin-appointments"
+      route: "/admin-appointments",
     },
     {
       src: "/assets/common/frontdesk.svg",
       alt: "Content",
       label: "Konten Edukasi",
-      route: "/admin-education"
+      route: "/admin-education",
     },
   ];
 
@@ -79,21 +125,18 @@ const AdminDashboard = () => {
           </div>
         ))}
       </div>
-
+      
+      {/* Tombol Keluar dan Pengaturan */}
       <nav className={styles.bottomNav}>
-        <div
-          className={`${styles.navItem} ${styles.settingsButton}`}
-          onClick={() => navigate("/settings")}
-        >
-          <span>Pengaturan</span>
-        </div>
+
         <div
           className={`${styles.navItem} ${styles.logoutButton}`}
-          onClick={() => navigate("/logout")}
+          onClick={() => navigate("/")}
         >
           <span>Keluar</span>
         </div>
       </nav>
+
     </div>
   );
 };

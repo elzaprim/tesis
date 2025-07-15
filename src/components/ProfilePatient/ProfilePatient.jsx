@@ -184,7 +184,11 @@ const ProfilPasien = () => {
           <button onClick={() => navigate("/isi-data-pasien")}>Isi Data Pasien</button>
         </div>
       )}
+
+    <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+
     </div>
+    
   );
 };
 

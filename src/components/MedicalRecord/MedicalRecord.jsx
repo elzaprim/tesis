@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MedicalRecord.module.css";
+import { useNavigate } from "react-router-dom";
 
 const API_PATIENT = "https://api.sahabatbmeitb.my.id/Patient";
 const API_DIAGNOSTIC = "https://api.sahabatbmeitb.my.id/DiagnosticReport";
@@ -11,6 +12,8 @@ const MedicalRecord = () => {
   const [conditionData, setConditionData] = useState(null);
 
   const nik = sessionStorage.getItem("nik");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,6 +94,9 @@ const MedicalRecord = () => {
             )}
         </div>
         </div>
+    
+    <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+        
     </div>
     );
 };

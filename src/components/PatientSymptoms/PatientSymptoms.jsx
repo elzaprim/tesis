@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./PatientSymptoms.module.css";
+import { useNavigate } from "react-router-dom";
+
 
 const API_BASE = "https://api.sahabatbmeitb.my.id";
 
@@ -31,6 +33,8 @@ const PatientSymptoms = () => {
   const [existingSymptoms, setExistingSymptoms] = useState([]);
   const [filteredSymptoms, setFilteredSymptoms] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   // Fetch patient data
   useEffect(() => {
@@ -263,6 +267,7 @@ const PatientSymptoms = () => {
         )}
       </div>
 
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
     </div>
   );

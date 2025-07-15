@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styles from "./FaqEducation.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FaqEducation = () => {
   const [faqList, setFaqList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
+
+  const navigate = useNavigate();
+  
 
   useEffect(() => {
     const fetchFaq = async () => {
@@ -59,6 +63,9 @@ const FaqEducation = () => {
           ))}
         </ul>
       )}
+      
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+      
     </div>
   );
 };

@@ -5,7 +5,7 @@ import styles from "./ProfilePatientAdmin.module.css";
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
+import { useNavigate } from "react-router-dom";
 const API_BASE_URL = "/api";
 
 const ProfilePatientDokter = () => {
@@ -21,6 +21,8 @@ const ProfilePatientDokter = () => {
   const [stagings, setStagings] = useState({});
   const [updateDate, setUpdateDate] = useState(new Date().toISOString().split("T")[0]);
 
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -225,6 +227,9 @@ const ProfilePatientDokter = () => {
           </button>
         </div>
       </div>
+      
+      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+      
     </div>
   );
 };

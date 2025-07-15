@@ -16,6 +16,7 @@ const PatientAppointment = () => {
 
   const navigate = useNavigate();
   const nik = sessionStorage.getItem("nik");
+  
 
   // Ambil no_rekam_medis berdasarkan nik
   useEffect(() => {
@@ -104,30 +105,17 @@ const PatientAppointment = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Jadwal Janji Temu</h1>
 
-      <div className={styles.calendarContainer}>
+      
+      <div className={styles.calendarWrapper}>
         <Calendar
           onChange={handleDateChange}
           onActiveStartDateChange={handleActiveStartDateChange}
           value={selectedDate}
         />
-
-        {/* <Calendar
-          onChange={handleDateChange}
-          onActiveStartDateChange={handleActiveStartDateChange}
-          value={selectedDate}
-          tileClassName={({ date }) => {
-            const match = appointments.find(
-              (appt) =>
-                new Date(appt.tanggal).toDateString() === date.toDateString()
-            );
-            return match ? styles.highlightDate : null;
-          }}
-        /> */}
-
       </div>
 
       <div className={styles.notesContainer}>
-        <h2 className={styles.notesTitle}>Catatan:</h2>
+        <h2 className={styles.notesTitle}>Janji Temu Bulan Ini:</h2>
 
         {loading ? (
           <p>Memuat jadwal...</p>
@@ -168,6 +156,8 @@ const PatientAppointment = () => {
           Keluar
         </button>
       </div> */}
+       <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+        
     </div>
   );
 };

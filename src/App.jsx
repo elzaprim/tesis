@@ -42,6 +42,8 @@ import PatientContentList from './components/Education/PatientContentList';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import AbandonPage from './components/Abandon/AbandonPage';
+
 // //chat
 // import firebase from 'firebase/app';
 // import 'firebase-firestore';
@@ -137,6 +139,8 @@ function App() {
           {/* Rute untuk Overview Dokter*/}
           <Route path="/overview" element={<Overview />} />
           <Route path="/profile-patient-doctor" element={<ProfilePatientDokter />} />
+
+          <Route path="/abandon" element={<AbandonPage />} />
  
         </Routes>
                 {/*Tambahkan ini agar toast muncul di semua halaman */}

@@ -175,5 +175,62 @@
   }
 }
 
+.backButton {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #f0f0f0;
+}
 
 
+
+/* Hanya ubah tampilan calendar di dalam calendarWrapper */
+.calendarWrapper :global(.react-calendar__tile) {
+  color: #333 !important; /* Ubah warna teks tanggal agar tidak putih */
+}
+
+/* Highlight hari ini */
+.calendarWrapper :global(.react-calendar__tile--now) {
+  background: #e6f7ff !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+/* Highlight tanggal yang dipilih */
+.calendarWrapper :global(.react-calendar__tile--active) {
+  background: var(--color-primary-1) !important;
+  color: #fff !important;
+}
+
+/* Bagian atas: bulan & tahun */
+.calendarWrapper :global(.react-calendar__navigation) {
+  background-color: transparent; /* Opsional */
+}
+
+/* Tombol bulan, tahun, dan panah navigasi */
+.calendarWrapper :global(.react-calendar__navigation button) {
+  color: #333 !important; /* Ganti dari putih jadi gelap */
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+}
+
+.calendarWrapper {
+  display: flex;
+  justify-content: center; /* Horizontal center */
+  margin: 20px 0;
+}

@@ -6,6 +6,9 @@ import styles from "./ProfilePatientAdmin.module.css";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
+import { useNavigate } from "react-router-dom";
+
+
 const API_BASE_URL = "/api";
 
 const ProfilePatientAdmin = () => {
@@ -24,6 +27,8 @@ const ProfilePatientAdmin = () => {
   const [subgroups, setSubgroups] = useState({});
   const [stagings, setStagings] = useState({});
   const [updateDate, setUpdateDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdditionalData = async () => {
@@ -162,12 +167,32 @@ const ProfilePatientAdmin = () => {
     }
   };
 
+
+
   if (!view) {
     return (
       <div className={styles.container}>
         <h1>Manajemen Data Pasien</h1>
         <button onClick={() => setView("importExcel")} className={styles.button}>Import Data Excel</button>
         <button onClick={() => setView("lihatData")} className={styles.button}>Lihat Data Pasien</button>
+        {/* <button onClick={() => setView("lihatAbandon")} className={styles.button}>Lihat Data Abandon Pasien</button> */}
+          <Link to="/abandon" className={styles.button}>
+            Lihat Data Abandon Pasien
+          </Link>
+
+                {/* Tambahkan tombol kembali di sini */}
+          <button onClick={() => navigate(-1)} className={styles.backButton} style={{ marginTop: "20px" }}>
+            ← Kembali
+          </button>
+      </div>
+    );
+  }
+
+  if (view === "lihatAbandon") {
+    return (
+      <div className={styles.container}>
+        <AbandonPage />
+        <button className={styles.backButton} onClick={() => setView(null)}>← Kembali</button>
       </div>
     );
   }
@@ -191,6 +216,9 @@ const ProfilePatientAdmin = () => {
             <button onClick={() => handleFileUpload(key, endpoint)} className={styles.uploadButton}>Kirim</button>
           </div>
         ))}
+        
+        <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+        
         {/* <button onClick={() => setView(null)} className={styles.button}>Kembali</button> */}
       </div>
     );
@@ -309,10 +337,9 @@ const ProfilePatientAdmin = () => {
           </button>
         </div>
       </div>
+      
+    <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
-      {/* <div className={styles.backButtonWrapper}>
-        <button onClick={() => setView(null)} className={styles.button}>Kembali</button>
-      </div> */}
     </div>
   );
 };

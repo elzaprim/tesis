@@ -17,7 +17,7 @@ const DoctorDashboard = () => {
     { src: "/assets/common/lifesavers.svg", alt: "Overview", label: "Overview", route: "/overview" },
     { src: "/assets/common/lifesavers-caretaking.svg", alt: "Data Pasien", label: "Data Pasien", route: "/profile-patient-doctor" },
     { src: "/assets/common/videocall.svg", alt: "Janji Temu", label: "Janji Temu", route: "/doctor-appointments" },
-    { src: "/assets/common/standing.svg", alt: "Konsultasi", label: "Konsultasi", route: "/consultations" },
+    // { src: "/assets/common/standing.svg", alt: "Konsultasi", label: "Konsultasi", route: "/consultations" },
   ];
 
   const navItems = [
@@ -70,18 +70,17 @@ const DoctorDashboard = () => {
         ))}
       </div>
 
-      {/* Navigasi bawah */}
+      {/* Tombol Keluar dan Pengaturan */}
       <nav className={styles.bottomNav}>
-        {navItems.map((item, index) => (
-          <div
-            key={index}
-            className={`${styles.navItem} ${item.className}`}
-            onClick={() => navigate(item.route)}
-          >
-            <span>{item.label}</span>
-          </div>
-        ))}
+
+        <div
+          className={`${styles.navItem} ${styles.logoutButton}`}
+          onClick={() => navigate("/")}
+        >
+          <span>Keluar</span>
+        </div>
       </nav>
+      
     </div>
   );
 };
