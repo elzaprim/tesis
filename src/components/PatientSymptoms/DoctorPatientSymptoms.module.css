@@ -1,0 +1,202 @@
+@import "../../vars.css";
+
+/* =================== CONTAINER & HEADER =================== */
+.container {
+  padding: 20px;
+  background-color: var(--color-secondary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--color-primary-1);
+}
+
+.header h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* =================== TABLE =================== */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  border-radius: 8px;
+  min-width: 800px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.table thead {
+  background-color: var(--color-primary-2);
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  color: var(--color-bg);
+  font-weight: bold;
+}
+
+.table td {
+  background-color: #f9f9f9;
+  color: var(--color-primary-1);
+  word-break: break-word;
+  max-width: 200px;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-highlight);
+  transition: background-color 0.3s ease;
+}
+
+/* =================== BUTTONS =================== */
+.viewDetailsButton {
+  background-color: var(--color-secondary);
+  color: var(--color-primary-2);
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.viewDetailsButton:hover {
+  background-color: var(--color-add-1);
+  transform: scale(1.05);
+}
+
+/* =================== SEARCH & FILTER =================== */
+.searchRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 250px;
+  flex-grow: 1;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-right: auto;
+}
+
+.resetButton,
+.exportButton {
+  padding: 8px 14px;
+  font-size: 14px;
+  background-color: var(--color-primary-4);
+  color: var(--color-primary-2);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.resetButton:hover,
+.exportButton:hover {
+  background-color: var(--color-primary-3);
+}
+
+/* =================== RESPONSIVE =================== */
+@media screen and (max-width: 830px) {
+  .table {
+    font-size: 12px;
+  }
+
+  .searchRow {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .searchInput {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .buttonGroup {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .resetButton,
+  .exportButton {
+    flex: 1 1 48%;
+    width: auto;
+  }
+
+  .viewDetailsButton {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .table {
+    font-size: 12px;
+    min-width: 600px;
+  }
+
+  .viewDetailsButton {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .resetButton,
+  .exportButton {
+    width: 100%;
+  }
+}
+
+/* =================== FIXED BACK BUTTON =================== */
+.backButton {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #f0f0f0;
+}

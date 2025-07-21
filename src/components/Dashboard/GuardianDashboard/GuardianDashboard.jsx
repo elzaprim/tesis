@@ -3,16 +3,36 @@ import styles from "./GuardianDashboard.module.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import axios from "axios";
+
 const API_BASE = "https://api.sahabatbmeitb.my.id";
 
 const GuardianDashboard = () => {
-  const [userName, setUserName] = useState("Guest");
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const name = sessionStorage.getItem("nama_lengkap");
-    if (name) setUserName(name);
-  }, []);
+  // useEffect(() => {
+  //   const name = sessionStorage.getItem("nama_lengkap");
+  //   if (name) setUserName(name);
+  // }, []);
+
+    useEffect(() => {
+      const token = sessionStorage.getItem("auth_token");
+      const name = sessionStorage.getItem("nama_lengkap");
+      const role = sessionStorage.getItem("role");
+  
+      // Jika tidak ada token, atau role bukan pasien, paksa ke login
+      if (!token || role !== "pasien") {
+        sessionStorage.clear(); // pastikan semua data dibersihkan
+        navigate("/", { replace: true }); // cegah kembali ke sini via tombol Back
+        return;
+      }
+  
+      setUserName(name || "Pasien");
+    }, []);
+  
 
   useEffect(() => {
     const fetchAppointmentNotifs = async () => {
@@ -144,14 +164,50 @@ const GuardianDashboard = () => {
         ))}
       </div>
 
+      {/* Tombol Keluar dan Pengaturan */}
       <nav className={styles.bottomNav}>
         <div
           className={`${styles.navItem} ${styles.logoutButton}`}
-          onClick={() => navigate("/")}
+          onClick={async () => {
+            const result = await Swal.fire({
+              title: 'Yakin ingin keluar?',
+              text: 'Anda akan logout dari akun ini.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Ya, keluar',
+              cancelButtonText: 'Batal',
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+              const token = sessionStorage.getItem("auth_token"); // gunakan auth_token, bukan token
+
+              if (token) {
+                await axios.post("/api/logout", {}, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+              }
+
+              await Swal.fire('Berhasil Logout', 'Anda telah keluar.', 'success');
+
+            } catch (err) {
+              console.error("Logout gagal:", err);
+              await Swal.fire('Gagal Logout', 'Terjadi kesalahan saat logout.', 'error');
+            } finally {
+              sessionStorage.clear();
+              navigate("/", { replace: true }); // gunakan replace agar tidak bisa kembali ke dashboard
+            }
+          }}
         >
           <span>Keluar</span>
         </div>
       </nav>
+      
     </div>
   );
 };

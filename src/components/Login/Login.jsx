@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,10 +11,10 @@ export const Login = () => {
   const [role, setRole] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    username: '', // tambahkan ini
+    username: '',
     nip: '',
     bpjs: '',
-    email: '',
+    identifier: '', // ganti dari email ke identifier (bisa email, username, atau NIK)
     password: '',
     confirmPassword: '',
     hospital: '',
@@ -31,9 +31,10 @@ export const Login = () => {
     setErrors({});
     setFormData({
       name: '',
+      username: '',
       nip: '',
       bpjs: '',
-      email: '',
+      identifier: '',
       password: '',
       confirmPassword: '',
       hospital: '',
@@ -60,7 +61,7 @@ export const Login = () => {
       case 'administrator':
         navigate('/admin-dashboard');
         break;
-      case 'dokter': // Sesuai dengan API, bukan "doctor"
+      case 'dokter':
         navigate('/doctor-dashboard');
         break;
       case 'pasien':
@@ -76,27 +77,27 @@ export const Login = () => {
     setIsLoading(true);
     setLoginError(false);
 
-    if (!validateEmail(formData.email)) {
-      setLoginError(true);
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      // Ambil data user dari API
       const response = await fetch(API_USER_URL);
       const result = await response.json();
 
       if (response.ok && result.success) {
         const users = result.data;
-        const user = users.find(u => u.email === formData.email);
+
+        const user = users.find(u =>
+          u.email === formData.identifier ||
+          u.username === formData.identifier ||
+          u.nik === formData.identifier
+        );
 
         if (user) {
-          // Kirim password ke API login untuk verifikasi
           const loginResponse = await fetch(API_LOGIN_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: formData.email, password: formData.password }),
+            body: JSON.stringify({
+              email: user.email, // kirim email ke endpoint login meskipun input awal bisa username/NIK
+              password: formData.password,
+            }),
           });
 
           const loginResult = await loginResponse.json();
@@ -104,14 +105,12 @@ export const Login = () => {
           if (loginResponse.ok) {
             const { token } = loginResult;
             sessionStorage.setItem('user_id', user.id);
-            sessionStorage.setItem('role', user.level); // Gunakan level dari API
-            sessionStorage.setItem('auth_token', token); // Menyimpan token di sessionStorage
-          
-           // Tambahkan ini
+            sessionStorage.setItem('role', user.level);
+            sessionStorage.setItem('auth_token', token);
             sessionStorage.setItem('nik', user.nik);
             sessionStorage.setItem('email', user.email);
             sessionStorage.setItem('nama_lengkap', user.nama_lengkap);
-            // Redirect ke dashboard berdasarkan role
+
             redirectToDashboard(user.level);
           } else {
             setLoginError(true);
@@ -162,7 +161,7 @@ export const Login = () => {
           email: formData.email,
           password: formData.password,
           nik: formData.nip,
-          level: role, 
+          level: role,
         }),
       });
 
@@ -192,8 +191,15 @@ export const Login = () => {
       ) : isCreatingAccount ? (
         <div className={styles.formContainer}>
           <h3>Buat Akun</h3>
+
           <label htmlFor="role">Pilih Role:</label>
-          <select id="role" name="role" className={styles.selectField} value={role} onChange={(e) => setRole(e.target.value)}>
+          <select
+            id="role"
+            name="role"
+            className={styles.selectField}
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
             <option value="">Pilih Role</option>
             <option value="dokter">Dokter</option>
             <option value="administrator">Admin</option>
@@ -201,15 +207,50 @@ export const Login = () => {
           </select>
           {errors.role && <span className={styles.errorMessage}>{errors.role}</span>}
 
-          <input type="text" name="name" placeholder="Nama Lengkap" className={styles.inputField} value={formData.name} onChange={handleInputChange} />
+          <input
+            type="text"
+            name="name"
+            placeholder="Nama Lengkap"
+            className={styles.inputField}
+            value={formData.name}
+            onChange={handleInputChange}
+          />
 
-          <input type="text" name="nip" placeholder="NIP" className={styles.inputField} value={formData.nip} onChange={handleInputChange} />
+          <input
+            type="text"
+            name="nip"
+            placeholder="NIP"
+            className={styles.inputField}
+            value={formData.nip}
+            onChange={handleInputChange}
+          />
 
-          <input type="email" name="email" placeholder="Email" className={styles.inputField} value={formData.email} onChange={handleInputChange} />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className={styles.inputField}
+            value={formData.email}
+            onChange={handleInputChange}
+          />
           {errors.email && <span className={styles.errorMessage}>{errors.email}</span>}
 
-          <input type="password" name="password" placeholder="Password" className={styles.inputField} value={formData.password} onChange={handleInputChange} />
-          <input type="password" name="confirmPassword" placeholder="Konfirmasi Password" className={styles.inputField} value={formData.confirmPassword} onChange={handleInputChange} />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className={styles.inputField}
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Konfirmasi Password"
+            className={styles.inputField}
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+          />
 
           <button className={styles.submitButton} onClick={handleRegisterSubmit} disabled={isLoading}>
             {isLoading ? 'Loading...' : 'Buat Akun'}
@@ -221,12 +262,31 @@ export const Login = () => {
       ) : (
         <div className={styles.formContainer}>
           <h3>Login</h3>
-          <input type="email" name="email" placeholder="Email" className={styles.inputField} value={formData.email} onChange={handleInputChange} />
-          <input type="password" name="password" placeholder="Password" className={styles.inputField} value={formData.password} onChange={handleInputChange} />
+
+          <input
+            type="text"
+            name="identifier"
+            placeholder="Email / Username / NIK"
+            className={styles.inputField}
+            value={formData.identifier}
+            onChange={handleInputChange}
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className={styles.inputField}
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+
           <button className={styles.submitButton} onClick={handleLoginSubmit} disabled={isLoading}>
             {isLoading ? 'Loading...' : 'Login'}
           </button>
-          {loginError && <p className={styles.errorMessage}>Email atau Password salah!</p>}
+
+          {loginError && <p className={styles.errorMessage}>Email / Username / NIK atau Password salah!</p>}
+
           <button type="button" onClick={handleAccountSwitch} className={styles.switchButton}>
             Belum punya akun? Daftar
           </button>

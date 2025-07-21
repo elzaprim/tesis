@@ -44,6 +44,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AbandonPage from './components/Abandon/AbandonPage';
 
+import DoctorPatientSymptoms from './components/PatientSymptoms/DoctorPatientSymptoms';
+import DetailSymptoms from './components/PatientSymptoms/DetailSymptoms';
+
 // //chat
 // import firebase from 'firebase/app';
 // import 'firebase-firestore';
@@ -65,10 +68,12 @@ import GuardianEducation from './components/Education/GuardianEducation';
 import ContentList from './components/Education/ContentList';
 import EditContent from './components/Education/EditContent';
 
-import styles from './App.module.css';
+import FaqEdit from './components/Education/FaqEdit';
 
 // Import Overview Dokter
 import Overview from './components/Overview/Overview';
+
+import styles from './App.module.css';
 
 function App() {
   return (
@@ -141,10 +146,19 @@ function App() {
           <Route path="/profile-patient-doctor" element={<ProfilePatientDokter />} />
 
           <Route path="/abandon" element={<AbandonPage />} />
- 
+          
+          {/* Rute untuk Gejala Pasien di Dokter*/}
+          <Route path="/doctor-patient-symptoms" element={<DoctorPatientSymptoms />} />
+          <Route path="/doctor-patient-symptom-detail/:noRekamMedis" element={<DetailSymptoms />} />
+
+          {/* Rute untuk Edit FAQr*/}
+          <Route path="/admin-education/faq" element={<FaqEducation />} />
+          <Route path="/admin-education/faq/edit" element={<FaqEdit />} />
+          <Route path="/admin-education/faq/edit/:id" element={<FaqEdit />} />
+
         </Routes>
                 {/*Tambahkan ini agar toast muncul di semua halaman */}
-          `<ToastContainer position="top-right" autoClose={4000} />
+          <ToastContainer position="top-right" autoClose={4000} />
       </div>
     </Router>
   );

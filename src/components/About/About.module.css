@@ -135,12 +135,4 @@
         padding: 12px 20px;
     }
 
-    /* Ensure that on small screens, prev and next are swapped */
-    .navigation button:nth-child(1) {
-        order: 2; /* Ensure 'Kembali' button comes second */
-    }
-
-    .navigation button:nth-child(2) {
-        order: 1; /* Ensure 'Selanjutnya' button comes first */
-    }
 }

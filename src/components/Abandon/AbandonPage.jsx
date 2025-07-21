@@ -3,12 +3,25 @@ import axios from "axios";
 import styles from "./Abandon.module.css";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
-
 import { useNavigate } from "react-router-dom";
+
+const formatDate = (tanggalStr) => {
+  const date = new Date(tanggalStr);
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+const getTodayDateString = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0]; // Format YYYY-MM-DD
+};
+
 
 const AbandonPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -19,62 +32,63 @@ const AbandonPage = () => {
     const fetchAppointments = async () => {
       try {
         const res = await axios.get("/api/Appointment");
-        // if (res.data.success) {
-        //   const today = new Date();
-
-        //   const updatedData = res.data.data.map((item) => {
-        //     let abandon = item.abandon; // pakai dari DB dulu
-
-        //     // Jika belum pernah diubah manual (abandon belum diset di DB)
-        //     if (!abandon) {
-        //       const appointmentDate = new Date(item.tanggal);
-        //       const kehadiran = item.kehadiran?.toLowerCase();
-        //       const selisihMinggu = (today - appointmentDate) / (1000 * 60 * 60 * 24 * 7);
-        //       abandon =
-        //         kehadiran === "tidak hadir" && selisihMinggu > 4 ? "ya" : "tidak";
-        //     }
-
-        //     return { ...item, abandon };
-        //   });
-
-
-        //   setAppointments(updatedData);
 
         if (res.data.success) {
           const today = new Date();
           const data = res.data.data;
 
-          // Grup berdasarkan no_rekam_medis, ambil yang tanggalnya paling baru
-          const grouped = {};
+          // Filter hanya appointment yang sudah lewat hari ini
+          const pastAppointments = data.filter((item) => {
+            const itemDate = new Date(item.tanggal);
+            return itemDate < today;
+          });
 
-          data.forEach((item) => {
+          // Cari appointment 'tidak hadir' dan lebih dari 4 minggu lalu
+          const grouped = {};
+          pastAppointments.forEach((item) => {
             const key = item.no_rekam_medis;
             const itemDate = new Date(item.tanggal);
+            const kehadiran = item.kehadiran?.toLowerCase();
+            const selisihHari = (today - itemDate) / (1000 * 60 * 60 * 24);
 
-            if (!grouped[key] || itemDate > new Date(grouped[key].tanggal)) {
-              grouped[key] = item;
+            const shouldAbandon =
+              kehadiran === "tidak hadir" && selisihHari > 28;
+
+            if (shouldAbandon) {
+              if (!grouped[key] || itemDate > new Date(grouped[key].tanggal)) {
+                grouped[key] = item;
+              }
             }
           });
 
-          const updatedData = Object.values(grouped).map((item) => {
-            let abandon = item.abandon;
-
-            if (!abandon) {
-              const appointmentDate = new Date(item.tanggal);
-              const kehadiran = item.kehadiran?.toLowerCase();
-              const selisihMinggu =
-                (today - appointmentDate) / (1000 * 60 * 60 * 24 * 7);
-
-              abandon =
-                kehadiran === "tidak hadir" && selisihMinggu > 4 ? "ya" : "tidak";
-            }
-
-            return { ...item, abandon };
+          // Tandai hanya yang latest sebagai abandon = "ya"
+          const updatedData = data.map((item) => {
+            const abandonItem = grouped[item.no_rekam_medis];
+            const isAbandon = abandonItem && abandonItem.id === item.id;
+            return {
+              ...item,
+              abandon: isAbandon ? "ya" : "tidak",
+            };
           });
 
-          setAppointments(updatedData);
+          // Hanya tampilkan yang abandon = "ya"
+          const filteredAbandonOnly = updatedData.filter(
+            (item) => item.abandon === "ya"
+          );
+
+          setAppointments(filteredAbandonOnly);
+
+          // Update abandon ke backend
+          updatedData.forEach(async (item) => {
+            try {
+              await axios.put(`/api/Appointment/update/${item.id}`, {
+                abandon: item.abandon,
+              });
+            } catch (err) {
+              console.error("Gagal update abandon otomatis:", err);
+            }
+          });
         }
-
       } catch (err) {
         console.error("Gagal fetch data appointment", err);
       } finally {
@@ -85,33 +99,42 @@ const AbandonPage = () => {
     fetchAppointments();
   }, []);
 
-  const handleToggleAbandon = async (id, currentAbandon) => {
-    const newStatus = currentAbandon === "ya" ? "tidak" : "ya";
-
+  const handleUpdateCatatan = async (id, newCatatan) => {
     const result = await Swal.fire({
-      title: "Yakin ubah status abandon?",
-      text: `Status akan diubah menjadi "${newStatus.toUpperCase()}"`,
-      icon: "warning",
+      title: "Konfirmasi",
+      text: `Ubah catatan menjadi "${newCatatan}" untuk pasien ini?`,
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Ya, ubah",
+      confirmButtonText: "Ya",
       cancelButtonText: "Batal",
     });
 
     if (result.isConfirmed) {
       try {
-        // Kirim ke backend
-        await axios.put(`/api/Appointment/update/${id}`, { abandon: newStatus });
+        const tanggalAkhir = getTodayDateString();
 
-        // Update frontend state
+        await axios.put(`/api/Appointment/update/${id}`, {
+          catatan: newCatatan,
+          abandon: "ya",
+          tanggal_akhir: tanggalAkhir,
+        });
+
         setAppointments((prev) =>
           prev.map((item) =>
-            item.id === id ? { ...item, abandon: newStatus } : item
+            item.id === id
+              ? {
+                  ...item,
+                  catatan: newCatatan,
+                  abandon: "ya",
+                  tanggal_akhir: tanggalAkhir,
+                }
+              : item
           )
         );
 
-        toast.success("Status abandon berhasil diperbarui!");
+        toast.success("Catatan berhasil diperbarui!");
       } catch (error) {
-        toast.error("Gagal memperbarui status abandon.");
+        toast.error("Gagal memperbarui catatan.");
         console.error("PUT error:", error);
       }
     }
@@ -123,15 +146,22 @@ const AbandonPage = () => {
       "No Registrasi": item.no_registrasi,
       "No Rekam Medis": item.no_rekam_medis,
       "Nama Dokter": item.nama_dokter,
+      "Tanggal Tidak Hadir": formatDate(item.tanggal),
       Abandon: item.abandon,
+      Catatan: item.catatan || "",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "AbandonPasien");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const dataBlob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
     saveAs(dataBlob, "AbandonPasien.xlsx");
   };
 
@@ -139,6 +169,7 @@ const AbandonPage = () => {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
       <div className={styles.header}>
         <h1>Data Abandon Pasien</h1>
         <button onClick={handleExportExcel} className={styles.exportButton}>
@@ -154,11 +185,13 @@ const AbandonPage = () => {
               <th>No Registrasi</th>
               <th>No Rekam Medis</th>
               <th>Nama Dokter</th>
+              <th>Tanggal Tidak Hadir</th>
               <th>Abandon</th>
-              <th>Aksi</th>
+              <th>Tanggal Update</th>
+              <th>Tindaklanjut</th>
             </tr>
           </thead>
-          <tbody>
+         <tbody>
             {appointments.length > 0 ? (
               appointments.map((a) => (
                 <tr key={a.id}>
@@ -166,27 +199,39 @@ const AbandonPage = () => {
                   <td>{a.no_registrasi}</td>
                   <td>{a.no_rekam_medis}</td>
                   <td>{a.nama_dokter}</td>
+                  <td>{formatDate(a.tanggal)}</td>
                   <td>{a.abandon}</td>
                   <td>
-                    <button
-                      className={styles.viewDetailsButton}
-                      onClick={() => handleToggleAbandon(a.id, a.abandon)}
+                    {a.tanggal_akhir && a.tanggal_akhir !== "0000-00-00"
+                      ? formatDate(a.tanggal_akhir)
+                      : "-"}
+                  </td>
+                  <td>
+                    <select
+                      value={a.catatan || ""}
+                      onChange={(e) => handleUpdateCatatan(a.id, e.target.value)}
+                      className={styles.dropdown}
                     >
-                      Ubah
-                    </button>
+                      <option value="">Pilih Aksi</option>
+                      <option value="Sudah Ditindaklanjuti">Sudah</option>
+                      <option value="Belum Ditindaklanjuti">Belum</option>
+                    </select>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">Tidak ada data appointment.</td>
+                <td colSpan="8">Tidak ada data abandon.</td>
               </tr>
             )}
           </tbody>
+
         </table>
       </div>
 
-     <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
+      <button className={styles.backButton} onClick={() => navigate(-1)}>
+        ← Kembali
+      </button>
     </div>
   );
 };

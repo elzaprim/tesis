@@ -71,6 +71,7 @@ h1 {
   padding: 8px 12px;
   font-size: 14px;
   border-radius: 6px;
+  font-weight: 500;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -81,8 +82,8 @@ h1 {
 }
 
 .table td button:first-child {
-  background-color: var(--color-primary-1);
-  color: white;
+  background-color: var(--color-primary-5);
+  color:  #333;
 }
 
 .table td button:last-child {

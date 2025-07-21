@@ -1,0 +1,138 @@
+@import "../../vars.css";
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--color-secondary);
+  color: var(--color-primary-2);
+  border-radius: 8px;
+  font-family: "Segoe UI", sans-serif;
+  text-align: left;
+}
+
+/* ================= JUDUL ================= */
+.h1 {
+  font-size: 28px;
+  color: var(--color-primary-2);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ================= FORM INPUT ================= */
+.searchInput {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary-2);
+  box-shadow: 0 0 0 2px rgba(100, 150, 250, 0.3);
+}
+
+/* ================= DAFTAR FAQ ================= */
+.faqList {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.faqItem {
+  background-color: var(--color-bg);
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.faqItem strong {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.faqItem p {
+  margin-bottom: 12px;
+}
+
+/* ================= TOMBOL AKSI ================= */
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.editButton,
+.deleteButton {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.editButton {
+  background-color: var(--color-primary-5);
+  color: #333;
+}
+
+.editButton:hover {
+  background-color: var(--color-primary-1);
+}
+
+.deleteButton {
+  background-color: var(--color-error);
+  color: #fff;
+}
+
+.deleteButton:hover {
+  background-color: #c0392b;
+}
+
+/* ================= TOMBOL BACK & SUBMIT ================= */
+.backButton {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.backButton:hover {
+  background-color: #f0f0f0;
+}
+
+/* ================= RESPONSIVE ================= */
+@media screen and (max-width: 768px) {
+  .searchInput {
+    font-size: 14px;
+  }
+
+  .editButton,
+  .deleteButton {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .backButton {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+}

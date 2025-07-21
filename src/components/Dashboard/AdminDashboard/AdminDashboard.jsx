@@ -5,18 +5,28 @@ import styles from "./AdminDashboard.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+
 const AdminDashboard = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const [toastShown, setToastShown] = useState(false); // flag agar toast hanya muncul sekali
 
   useEffect(() => {
+    const token = sessionStorage.getItem("auth_token");
     const name = sessionStorage.getItem("nama_lengkap");
-    if (name) {
-      setUserName(name);
-    } else {
-      setUserName("Admin");
+    const role = sessionStorage.getItem("role");
+
+    // Jika tidak ada token, atau role bukan administrator, paksa ke login
+    if (!token || role !== "administrator") {
+      sessionStorage.clear(); // pastikan semua data dibersihkan
+      navigate("/", { replace: true }); // cegah kembali ke sini via tombol Back
+      return;
     }
+
+    setUserName(name || "Admin");
   }, []);
 
   useEffect(() => {
@@ -54,10 +64,10 @@ const AdminDashboard = () => {
           }, 0);
 
           if (abandonCount > 0) {           
-            toast.warn(`⚠️ Ada ${abandonCount} pasien dengan status abandon!`, {
+            toast.warn(`Ada ${abandonCount} pasien dengan status abandon!`, {
               toastId: "abandon-warning", // tambahkan toastId unik di sini
 
-              onClick: () => navigate("/abandon-page"),
+              onClick: () => navigate("/abandon"),
               position: "top-right",
               autoClose: 5000,
               closeOnClick: true,
@@ -128,10 +138,43 @@ const AdminDashboard = () => {
       
       {/* Tombol Keluar dan Pengaturan */}
       <nav className={styles.bottomNav}>
-
         <div
           className={`${styles.navItem} ${styles.logoutButton}`}
-          onClick={() => navigate("/")}
+          onClick={async () => {
+            const result = await Swal.fire({
+              title: 'Yakin ingin keluar?',
+              text: 'Anda akan logout dari akun ini.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Ya, keluar',
+              cancelButtonText: 'Batal',
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+              const token = sessionStorage.getItem("auth_token"); // gunakan auth_token, bukan token
+
+              if (token) {
+                await axios.post("/api/logout", {}, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+              }
+
+              await Swal.fire('Berhasil Logout', 'Anda telah keluar.', 'success');
+
+            } catch (err) {
+              console.error("Logout gagal:", err);
+              await Swal.fire('Gagal Logout', 'Terjadi kesalahan saat logout.', 'error');
+            } finally {
+              sessionStorage.clear();
+              navigate("/", { replace: true }); // gunakan replace agar tidak bisa kembali ke dashboard
+            }
+          }}
         >
           <span>Keluar</span>
         </div>

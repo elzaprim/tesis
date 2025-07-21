@@ -35,10 +35,20 @@ const AdminEducation = () => {
         >
           Tambah Konten Baru
         </button>
+
+        {/*Tombol Baru untuk Lihat/Edit FAQ */}
+        <button
+          className={styles.menuButton}
+          onClick={() => navigate("/admin-education/faq/edit")}
+        >
+          Lihat dan Edit FAQ
+        </button>
+
       </div>
 
-      <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
-      
+      <button className={styles.backButton} onClick={() => navigate("/admin-dashboard")}>
+        ← Kembali
+      </button>
     </div>
   );
 };
