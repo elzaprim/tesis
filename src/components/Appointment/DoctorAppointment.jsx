@@ -223,7 +223,7 @@ const DoctorAppointment = () => {
           no_registrasi: pasien.no_registrasi,
           no_rekam_medis: pasien.no_rekam_medis,
           nama_dokter: doctorName,
-          tanggal_mulai: newStartDate,
+          tanggal: newStartDate,
           tanggal_akhir: newEndDate || newStartDate,
           status: "request",
           keterangan: "Jadwal dibuat oleh dokter",
