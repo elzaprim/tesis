@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const [toastShown, setToastShown] = useState(false); // flag agar toast hanya muncul sekali
+  
 
   useEffect(() => {
     const token = sessionStorage.getItem("auth_token");
@@ -82,8 +83,42 @@ const AdminDashboard = () => {
       }
     };
 
-    checkAbandonPatients();
-  }, []);
+      checkAbandonPatients();
+    }, []);
+
+    useEffect(() => {
+      const checkDoctorRequests = async () => {
+        try {
+          const res = await fetch("/api/Appointment");
+          const json = await res.json();
+          if (!json.success) return;
+
+          const data = Array.isArray(json.data) ? json.data : [json.data];
+          const requests = data.filter((item) =>
+            item.status?.toLowerCase() === "request"
+          );
+
+          if (requests.length > 0 && !window.hasShownRequestToast) {
+            window.hasShownRequestToast = true; // global flag
+            toast.info(`📥 Ada ${requests.length} permintaan janji temu dari dokter yang perlu ditinjau.`, {
+              onClick: () => navigate("/admin-appointments"),
+              position: "top-right",
+              autoClose: 6000,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "colored",
+              style: { cursor: "pointer" }
+            });
+          }
+
+        } catch (err) {
+          console.error("Gagal cek permintaan janji temu dokter:", err);
+        }
+      };
+
+      checkDoctorRequests();
+    }, [navigate]);
 
 
   const menuItems = [
@@ -172,6 +207,7 @@ const AdminDashboard = () => {
               await Swal.fire('Gagal Logout', 'Terjadi kesalahan saat logout.', 'error');
             } finally {
               sessionStorage.clear();
+              localStorage.removeItem("doctorRequestShown");
               navigate("/", { replace: true }); // gunakan replace agar tidak bisa kembali ke dashboard
             }
           }}

@@ -85,6 +85,72 @@ const GuardianDashboard = () => {
     fetchAppointmentNotifs();
   }, [navigate]);
 
+  useEffect(() => {
+    const checkDoctorNotes = async () => {
+      const nik = sessionStorage.getItem("nik");
+      if (!nik) return;
+
+      try {
+        const resPasien = await fetch(`${API_BASE}/Patient/${nik}`);
+        const jsonPasien = await resPasien.json();
+        if (!jsonPasien.success) return;
+
+        const pasien = Array.isArray(jsonPasien.data)
+          ? jsonPasien.data[0]
+          : jsonPasien.data;
+
+        const noRekamMedis = pasien.no_rekam_medis;
+        const resSymptoms = await fetch(`${API_BASE}/Symptom/${noRekamMedis}`);
+        const jsonSymptoms = await resSymptoms.json();
+        if (!jsonSymptoms.success) return;
+
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+        // Ambil history notifikasi sebelumnya
+        const storedKeys = JSON.parse(localStorage.getItem("doctorNoteShown") || "{}");
+
+        // Bersihkan notifikasi lama (>24 jam)
+        Object.keys(storedKeys).forEach((key) => {
+          const saved = new Date(storedKeys[key]);
+          if (now - saved > 24 * 60 * 60 * 1000) {
+            delete storedKeys[key];
+          }
+        });
+
+        jsonSymptoms.data.forEach((item) => {
+          if (item.catatan_dokter) {
+            const itemDate = new Date(item.updated_at || item.created_at || item.tanggal_gejala);
+            const isRecent = itemDate > oneDayAgo;
+            const toastKey = `doctor-note-${item.id}`;
+
+            if (isRecent && !storedKeys[toastKey]) {
+              toast.info(
+                `🩺 Catatan dari dokter tersedia untuk gejala tanggal ${new Date(item.tanggal_gejala).toLocaleDateString("id-ID")}`,
+                {
+                  onClick: () => navigate("/patient-symptoms"),
+                  style: { cursor: "pointer" },
+                  toastId: toastKey,
+                }
+              );
+
+              // Simpan waktu tampil notifikasi
+              storedKeys[toastKey] = now.toISOString();
+            }
+          }
+        });
+
+        // Simpan kembali ke localStorage setelah update
+        localStorage.setItem("doctorNoteShown", JSON.stringify(storedKeys));
+      } catch (err) {
+        console.error("Gagal cek catatan dokter:", err);
+      }
+    };
+
+    checkDoctorNotes();
+  }, [navigate]);
+
+
   const isTodayNear = (dateStr, daysBefore) => {
     const target = new Date(dateStr);
     const today = new Date();
@@ -198,10 +264,13 @@ const GuardianDashboard = () => {
             } catch (err) {
               console.error("Logout gagal:", err);
               await Swal.fire('Gagal Logout', 'Terjadi kesalahan saat logout.', 'error');
+
             } finally {
               sessionStorage.clear();
+              localStorage.removeItem("doctorNoteShown"); // reset notifikasi agar muncul lagi setelah login
               navigate("/", { replace: true }); // gunakan replace agar tidak bisa kembali ke dashboard
             }
+
           }}
         >
           <span>Keluar</span>

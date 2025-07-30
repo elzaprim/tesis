@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -155,21 +155,21 @@
 .actionButtonContainer {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
   align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* ini yang penting untuk cegah turun ke bawah */
 }
 
 .actionButton {
-  padding: 10px 14px;
-  font-size: 14px;
-  min-width: 110px;
-  max-width: 130px;
+  padding: 6px 10px;
+  font-size: 13px;
+  width: 70px;        /* gunakan fixed width agar seragam dan ramping */
   text-align: center;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .rescheduleButton {
@@ -217,17 +217,14 @@
   }
 }
 
-.modalContent {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
 .modalActions {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
+  justify-content: flex-end; /* dari center ke flex-end */
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
+
 
 .modalContent input {
   padding: 10px 14px;
@@ -351,4 +348,43 @@ select {
 
 .backButton:hover {
   background-color: #f0f0f0;
+}
+
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 18px;
+  color: var(--color-primary-2);
+}
+
+.checkboxRow label {
+  margin: 0;
+  white-space: nowrap; /* Supaya label tidak terpecah */
+  font-weight: 500;
+}
+
+.checkboxRow input[type="checkbox"] {
+  margin: 0;
+}
+
+.checkboxRow input[type="checkbox"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--color-primary-2);
 }

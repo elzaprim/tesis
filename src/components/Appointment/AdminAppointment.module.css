@@ -28,7 +28,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-width: 900px;
+  max-width: 1200px;  /* Umum untuk full-HD layout */
   margin: 0 auto;
 }
 
@@ -58,17 +58,26 @@
   color: var(--color-primary-2);
 }
 
+/* TABLE WRAPPER */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
 /* TABLE */
 .table {
   width: 100%;
+  min-width: 1000px; /* Bisa disesuaikan sesuai kebutuhan kolom */
   border-collapse: collapse;
   margin-top: 16px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   text-align: center;
+  overflow: hidden;
 }
 
+/* HEADER */
 .table thead {
   background-color: var(--color-primary-2);
 }
@@ -79,14 +88,17 @@
   padding: 12px;
   text-align: center;
   border-right: 1px solid var(--color-bg);
+  white-space: nowrap; /* Hindari pecah baris */
 }
 
+/* BODY */
 .table td {
   padding: 12px;
   vertical-align: middle;
   background-color: whitesmoke;
   color: var(--color-primary-1);
   border-right: 1px solid var(--color-bg);
+  white-space: nowrap; /* Hindari pecah konten */
 }
 
 .table td:last-child,
@@ -102,6 +114,7 @@
   background-color: var(--color-primary-4);
 }
 
+/* NO DATA ROW */
 .noData {
   text-align: center;
   color: var(--color-primary-2);
@@ -110,27 +123,29 @@
   padding: 20px 0;
 }
 
-/* BUTTON ACTION */
+/* ACTION BUTTONS */
 .actionButtonContainer {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* Jangan wrap, agar tetap sejajar */
+  white-space: nowrap; /* Supaya tetap satu baris */
+  min-width: 160px;
 }
 
-.actionButton {
-  padding: 10px 14px;
-  font-size: 14px;
-  min-width: 110px;
-  max-width: 130px;
+.approveButton,
+.rejectButton {
+  padding: 8px 14px;
+  font-size: 13px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease;
+  border: none;
 }
 
+/* BUTTON APPROVE */
 .approveButton {
   background-color: var(--color-primary-1);
   color: white;
@@ -140,6 +155,7 @@
   background-color: var(--color-primary-2);
 }
 
+/* BUTTON REJECT */
 .rejectButton {
   background-color: var(--color-primary-4);
   color: var(--color-primary-2);

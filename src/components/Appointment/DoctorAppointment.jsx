@@ -20,18 +20,59 @@ const DoctorAppointment = () => {
   const [newDate, setNewDate] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newRekamMedis, setNewRekamMedis] = useState("");
-  const [newAddDate, setNewAddDate] = useState("");
+  // const [newAddDate, setNewAddDate] = useState("");
+  
+  const [newStartDate, setNewStartDate] = useState("");
+  const [newEndDate, setNewEndDate] = useState("");
 
+  const [isNewPatient, setIsNewPatient] = useState(false);
+  const [newPatientName, setNewPatientName] = useState("");
+  const [newNoRegistrasi, setNewNoRegistrasi] = useState("");
+
+  const [newTanggalLahir, setNewTanggalLahir] = useState("");
+  const [newJenisKelamin, setNewJenisKelamin] = useState("");
+  const [newBB, setNewBB] = useState("");
+  const [newTB, setNewTB] = useState("");
 
   const doctorName = sessionStorage.getItem("nama_lengkap");
 
   const [editMode, setEditMode] = useState(false);
+  // const [editData, setEditData] = useState({
+  //   tanggal: "",
+  //   status: "",
+  //   kehadiran: "",
+  //   keterangan: ""
+  // });
+
   const [editData, setEditData] = useState({
-    tanggal: "",
+    tanggal_mulai: "",
+    tanggal_akhir: "",
     status: "",
     kehadiran: "",
     keterangan: ""
   });
+
+
+  // useEffect(() => {
+  //   const fetchAppointments = async () => {
+  //     try {
+  //       const response = await axios.get(`${API_BASE_URL}/Appointment`);
+  //       if (response.data.success && Array.isArray(response.data.data)) {
+  //         const filteredByDoctor = response.data.data.filter(
+  //           (a) => a.nama_dokter?.toLowerCase() === doctorName?.toLowerCase()
+  //         );
+  //         setAppointments(filteredByDoctor);
+  //       }
+  //     } catch (err) {
+  //       toast.error("Gagal memuat janji temu.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchAppointments();
+  // }, [doctorName]);
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -41,7 +82,26 @@ const DoctorAppointment = () => {
           const filteredByDoctor = response.data.data.filter(
             (a) => a.nama_dokter?.toLowerCase() === doctorName?.toLowerCase()
           );
+
           setAppointments(filteredByDoctor);
+
+          const shownFeedbacks = JSON.parse(localStorage.getItem("shownFeedbacks") || "[]");
+
+          filteredByDoctor.forEach((a) => {
+            if (
+              a.feedback_admin &&
+              !shownFeedbacks.includes(a.id)
+            ) {
+              toast.info(`📌 Feedback admin untuk pasien ${a.nama_lengkap}: ${a.feedback_admin}`, {
+                toastId: `feedback-${a.id}`
+              });
+
+              // Simpan ID yang sudah ditampilkan
+              shownFeedbacks.push(a.id);
+            }
+          });
+
+          localStorage.setItem("shownFeedbacks", JSON.stringify(shownFeedbacks));
         }
       } catch (err) {
         toast.error("Gagal memuat janji temu.");
@@ -52,6 +112,7 @@ const DoctorAppointment = () => {
 
     fetchAppointments();
   }, [doctorName]);
+
 
   // const handleReschedule = (appointment) => {
   //   setSelectedAppointment(appointment);
@@ -100,42 +161,107 @@ const DoctorAppointment = () => {
   };
 
   const handleAddAppointment = async () => {
-    if (!newRekamMedis || !newAddDate) return toast.error("Lengkapi data!");
+    // Validasi input
+    if (
+      (!isNewPatient && (!newRekamMedis || !newStartDate)) || 
+      (isNewPatient && (!newPatientName || !newNoRegistrasi || !newStartDate))
+    ) {
+      return toast.error("Lengkapi data!");
+    }
 
     const token = sessionStorage.getItem("auth_token");
+    let pasien = null;
 
     try {
+      const token = sessionStorage.getItem('auth_token'); // Ambil token dari sessionStorage
+
+      if (isNewPatient) {
+        // Generate No Rekam Medis (sementara)
+        const generatedNoRekamMedis = "RM" + Date.now();
+
+        // Simpan pasien baru dengan header Authorization
+        const resCreate = await axios.post(
+          `${API_BASE_URL}/Patient/store`,
+          {
+            no_rekam_medis: generatedNoRekamMedis,
+            nama_lengkap: newPatientName,
+            no_registrasi: newNoRegistrasi,
+            tanggal_lahir: newTanggalLahir,
+            jenis_kelamin: newJenisKelamin,
+            bb: newBB,
+            tb: newTB
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        pasien = resCreate.data.data;
+      } else {
+        // Ambil pasien lama
+        const res = await axios.get(`${API_BASE_URL}/Patient/${newRekamMedis}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const dataPasien = Array.isArray(res.data?.data) ? res.data.data[0] : res.data.data;
+
+        if (!dataPasien) {
+          return toast.error("Pasien tidak ditemukan!");
+        }
+
+        pasien = dataPasien;
+      }
+      //  Tambah Janji Temu
       await axios.post(
         `${API_BASE_URL}/Appointment/store`,
         {
-          nama_lengkap: "Pasien 1", // bisa kamu ubah jadi dynamic kalau mau
-          no_registrasi: "01108711", // juga bisa dynamic jika perlu
-          no_rekam_medis: newRekamMedis,
+          nama_lengkap: pasien.nama_lengkap,
+          no_registrasi: pasien.no_registrasi,
+          no_rekam_medis: pasien.no_rekam_medis,
           nama_dokter: doctorName,
-          tanggal: newAddDate,
+          tanggal_mulai: newStartDate,
+          tanggal_akhir: newEndDate || newStartDate,
           status: "request",
-          keterangan: "Jadwal diubah oleh dokter"
+          keterangan: "Jadwal dibuat oleh dokter",
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           }
         }
       );
 
-      toast.success("Janji temu baru berhasil ditambahkan.");
+      toast.success("Janji temu berhasil ditambahkan.");
+
+      // Reset form
       setNewRekamMedis("");
-      setNewAddDate("");
+      setNewStartDate("");
+      setNewEndDate("");
+      setNewPatientName("");
+      setNewNoRegistrasi("");
+      setNewTanggalLahir("");
+      setNewJenisKelamin("");
+      setNewBB("");
+      setNewTB("");
+      setIsNewPatient(false);
+
+
     } catch (err) {
       toast.error("Gagal menambahkan janji temu.");
       console.error(err.response?.data || err.message);
     }
   };
 
+
   const handleEdit = (appointment) => {
     setSelectedAppointment(appointment);
     setEditData({
-      tanggal: appointment.tanggal || "",
+      tanggal_mulai: appointment.tanggal_mulai || appointment.tanggal || "",
+      tanggal_akhir: appointment.tanggal_akhir || appointment.tanggal || "",
       status: appointment.status || "",
       kehadiran: appointment.kehadiran || "",
       keterangan: appointment.keterangan || ""
@@ -143,31 +269,33 @@ const DoctorAppointment = () => {
     setEditMode(true);
   };
 
-  const handleSubmitEdit = async () => {
-    try {
-      const payload = {
-        ...selectedAppointment,
-        ...editData,
-        kehadiran: editData.kehadiran === "" ? null : editData.kehadiran,
-        keterangan: editData.keterangan === "" ? null : editData.keterangan,
-      };
+const handleSubmitEdit = async () => {
+  try {
+    const payload = {
+      ...selectedAppointment,
+      tanggal_mulai: editData.tanggal_mulai,
+      tanggal_akhir: editData.tanggal_akhir || editData.tanggal_mulai, // fallback
+      status: editData.status,
+      kehadiran: editData.kehadiran === "" ? null : editData.kehadiran,
+      keterangan: editData.keterangan === "" ? null : editData.keterangan,
+    };
 
-      await axios.put(`${API_BASE_URL}/Appointment/update/${selectedAppointment.id}`, payload);
+    await axios.put(`${API_BASE_URL}/Appointment/update/${selectedAppointment.id}`, payload);
 
-      setAppointments((prev) =>
-        prev.map((a) =>
-          a.id === selectedAppointment.id ? { ...a, ...payload } : a
-        )
-      );
+    setAppointments((prev) =>
+      prev.map((a) =>
+        a.id === selectedAppointment.id ? { ...a, ...payload } : a
+      )
+    );
 
-      toast.success("Janji temu berhasil diperbarui.");
-      setEditMode(false);
-      setSelectedAppointment(null);
-    } catch (err) {
-      toast.error("Gagal memperbarui janji temu.");
-      console.error("DETAIL ERROR:", err.response?.data || err.message);
-    }
-  };
+    toast.success("Janji temu berhasil diperbarui.");
+    setEditMode(false);
+    setSelectedAppointment(null);
+  } catch (err) {
+    toast.error("Gagal memperbarui janji temu.");
+    console.error("DETAIL ERROR:", err.response?.data || err.message);
+  }
+};
 
   const handleDeleteAppointment = async () => {
     const result = await Swal.fire({
@@ -256,6 +384,7 @@ const DoctorAppointment = () => {
             <th>Status</th>
             <th>Kehadiran</th>
             <th>Aksi</th>
+            <th>Feedback Admin</th>
           </tr>
         </thead>
 
@@ -265,26 +394,35 @@ const DoctorAppointment = () => {
               <tr key={a.id}>
                 <td>{a.nama_lengkap}</td>
                 <td>{a.no_rekam_medis}</td>
-                <td>{a.tanggal}</td>
+
+                <td>
+                  {a.tanggal
+                    ? a.tanggal_akhir && a.tanggal_akhir !== "0000-00-00" && a.tanggal_akhir !== a.tanggal
+                      ? `${a.tanggal} s.d. ${a.tanggal_akhir}`
+                      : a.tanggal
+                    : a.tanggal}
+                </td>
+
                 <td>{a.status}</td>
-                <td>{a.kehadiran || "-"}</td> {/* jika null, tampilkan "-" */}
+                <td>{a.kehadiran || "-"}</td>
                 <td>
                   <div className={styles.actionButtonContainer}>
-
                     <button
                       onClick={() => handleEdit(a)}
                       className={`${styles.actionButton} ${styles.approveButton}`}
                     >
                       Edit
                     </button>
-
                   </div>
                 </td>
+
+                {/* Tambahan untuk menampilkan kolom feedback admin */}
+                <td>{a.feedback_admin || "-"}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className={styles.noData}>Tidak ada janji temu ditemukan.</td>
+              <td colSpan="7" className={styles.noData}>Tidak ada janji temu ditemukan.</td>
             </tr>
           )}
         </tbody>
@@ -295,21 +433,100 @@ const DoctorAppointment = () => {
 
       <div className={styles.addAppointmentSection}>
         <h2>Tambah Janji Temu Baru</h2>
+
         <input
           type="text"
           placeholder="No Rekam Medis"
           value={newRekamMedis}
           onChange={(e) => setNewRekamMedis(e.target.value)}
         />
+
+        {/* Checkbox Pasien Baru */}
+        <div className={styles.checkboxRow}>
+          <label htmlFor="newPatientCheckbox">Apakah pasien merupakan pasien baru?</label>
+          <input
+            type="checkbox"
+            id="newPatientCheckbox"
+            checked={isNewPatient}
+            onChange={() => setIsNewPatient(!isNewPatient)}
+          />
+        </div>
+
+
+        {/* Input Tambahan untuk Pasien Baru */}
+        {isNewPatient && (
+          <>
+            <label>Nama Lengkap:</label>
+            <input
+              type="text"
+              placeholder="Nama Lengkap"
+              value={newPatientName}
+              onChange={(e) => setNewPatientName(e.target.value)}
+            />
+
+            <label>No Registrasi:</label>
+            <input
+              type="text"
+              placeholder="No Registrasi"
+              value={newNoRegistrasi}
+              onChange={(e) => setNewNoRegistrasi(e.target.value)}
+            />
+
+            <label>Tanggal Lahir:</label>
+            <input
+              type="date"
+              value={newTanggalLahir}
+              onChange={(e) => setNewTanggalLahir(e.target.value)}
+            />
+
+            <label>Jenis Kelamin:</label>
+            <select
+              value={newJenisKelamin}
+              onChange={(e) => setNewJenisKelamin(e.target.value)}
+            >
+              <option value="">Pilih jenis kelamin</option>
+              <option value="laki-laki">Laki-laki</option>
+              <option value="perempuan">Perempuan</option>
+            </select>
+
+            <label>Berat Badan (kg):</label>
+            <input
+              type="number"
+              placeholder="Berat Badan (kg)"
+              value={newBB}
+              onChange={(e) => setNewBB(e.target.value)}
+            />
+
+            <label>Tinggi Badan (cm):</label>
+            <input
+              type="number"
+              placeholder="Tinggi Badan (cm)"
+              value={newTB}
+              onChange={(e) => setNewTB(e.target.value)}
+            />
+          </>
+        )}
+
+
+        <label>Tanggal Mulai:</label>
         <input
           type="date"
-          value={newAddDate}
-          onChange={(e) => setNewAddDate(e.target.value)}
+          value={newStartDate}
+          onChange={(e) => setNewStartDate(e.target.value)}
         />
+
+        <label>Tanggal Akhir:</label>
+        <input
+          type="date"
+          value={newEndDate}
+          onChange={(e) => setNewEndDate(e.target.value)}
+        />
+
         <button className={styles.addButton} onClick={handleAddAppointment}>
           Tambah
         </button>
       </div>
+
 
       {showModal && (
         <div className={styles.modal}>
@@ -337,11 +554,18 @@ const DoctorAppointment = () => {
           <div className={styles.modalContent}>
             <h3>Edit Janji Temu</h3>
 
-            <label>Tanggal:</label>
+            <label>Tanggal Mulai:</label>
             <input
               type="date"
-              value={editData.tanggal}
-              onChange={(e) => setEditData({ ...editData, tanggal: e.target.value })}
+              value={editData.tanggal_mulai}
+              onChange={(e) => setEditData({ ...editData, tanggal_mulai: e.target.value })}
+            />
+
+            <label>Tanggal Akhir:</label>
+            <input
+              type="date"
+              value={editData.tanggal_akhir}
+              onChange={(e) => setEditData({ ...editData, tanggal_akhir: e.target.value })}
             />
 
             <label>Status:</label>
@@ -364,7 +588,6 @@ const DoctorAppointment = () => {
               <option value="hadir">Hadir</option>
               <option value="tidak hadir">Tidak Hadir</option>
             </select>
-
 
             <label>Keterangan (boleh dikosongkan):</label>
             <textarea

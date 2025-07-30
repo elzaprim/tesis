@@ -36,6 +36,9 @@ const PatientSymptoms = () => {
 
   const navigate = useNavigate();
 
+  const [catatanPasien, setCatatanPasien] = useState("");
+
+
   // Fetch patient data
   useEffect(() => {
     const fetchPatient = async () => {
@@ -130,6 +133,7 @@ const PatientSymptoms = () => {
       no_registrasi: noRegistrasi.trim(),
       gejala: symptomsList.join(", "),
       tanggal_gejala: selectedDate,
+      catatan_pasien: catatanPasien.trim(), // tambahan
     };
 
     try {
@@ -143,6 +147,7 @@ const PatientSymptoms = () => {
       if (res.ok && result.success) {
         setShowSuccess(true);
         setSymptomsList([]);
+        setCatatanPasien(""); // reset catatan
         setTimeout(() => setShowSuccess(false), 2000);
 
         const getRes = await fetch(`${API_BASE}/Symptom/${noRekamMedis}`);
@@ -221,52 +226,65 @@ const PatientSymptoms = () => {
         </ul>
       </div>
 
+      <div className={styles.noteSection}>
+        <label>Tambahan Catatan untuk Dokter:</label>
+        <textarea
+          rows="3"
+          value={catatanPasien}
+          onChange={(e) => setCatatanPasien(e.target.value)}
+          placeholder="Contoh: Demam 37 derajat sudah 3 hari..."
+        />
+      </div>
 
       <button onClick={handleSave} className={styles.saveButton}>Simpan</button>
       {showSuccess && <p className={styles.successMessage}>Berhasil disimpan!</p>}
 
-      <div className={styles.summarySection}>
-        <h3>Gejala pada Tanggal {selectedDate}:</h3>
-        {filteredSymptoms.length > 0 ? (
-          <ul className={styles.summaryList}>
-            {filteredSymptoms.map((item, idx) => {
-              const gejalaArray = item.gejala.split(',').map(g => g.trim());
-              return (
-                <li key={idx} className={styles.summaryItem}>
-                  <div className={styles.leftContent}>
-                    <strong>
-                      📅{" "}
-                      {new Date(item.tanggal_gejala).toLocaleDateString("id-ID", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </strong>
-                    <ul className={styles.gejalaList}>
-                      {gejalaArray.map((g, i) => (
-                        <li key={i}>🩺 {g}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className={styles.rightAction}>
-                    <button
-                      className={styles.removeButton}
-                      // onClick={() => handleDelete(item.id, item.no_rekam_medis)}
-                      onClick={() => handleDelete(item.id)}
+      <ul className={styles.summaryList}>
+        {filteredSymptoms.map((item, idx) => {
+          const gejalaArray = item.gejala.split(',').map(g => g.trim());
+          return (
+            <li key={idx} className={styles.summaryItem}>
+              <div className={styles.leftContent}>
+                <strong>
+                  📅{" "}
+                  {new Date(item.tanggal_gejala).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </strong>
 
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p>Tidak ada gejala untuk tanggal ini.</p>
-        )}
-      </div>
+                <ul className={styles.gejalaList}>
+                  {gejalaArray.map((g, i) => (
+                    <li key={i}>🩺 {g}</li>
+                  ))}
+                </ul>
 
+                {item.catatan_pasien && (
+                  <p className={styles.patientNote}>
+                    <strong>Catatan Pasien:</strong> {item.catatan_pasien}
+                  </p>
+                )}
+
+                {item.catatan_dokter && (
+                  <p className={styles.patientNote}>
+                    <strong>Catatan Dokter:</strong> {item.catatan_dokter}
+                  </p>
+                )}
+              </div>
+
+              <div className={styles.rightAction}>
+                <button
+                  className={styles.removeButton}
+                  onClick={() => handleDelete(item.id)}
+                >
+                  Hapus
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
       <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
     </div>

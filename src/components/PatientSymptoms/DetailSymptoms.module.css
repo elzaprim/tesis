@@ -1,6 +1,6 @@
 @import "../../vars.css";
 
-/* =================== CONTAINER & HEADER =================== */
+/* ========== CONTAINER & HEADER ========== */
 .container {
   padding: 20px;
   background-color: var(--color-secondary);
@@ -30,7 +30,7 @@
   color: var(--color-primary-1);
 }
 
-/* =================== TABLE =================== */
+/* ========== TABLE ========== */
 .tableWrapper {
   margin-top: 24px;
   overflow-x: auto;
@@ -38,9 +38,9 @@
 }
 
 .table {
-  width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  min-width: 900px;
+  width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -54,18 +54,29 @@
 .table td {
   padding: 12px;
   border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
 }
 
 .table th {
   color: var(--color-bg);
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .table td {
   background-color: #f9f9f9;
   color: var(--color-primary-1);
+  max-width: 250px;
   word-break: break-word;
+  white-space: normal;
+  text-align: center;
+}
+
+.table td.catatan {
+  text-align: left;
   max-width: 300px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .table tbody tr:hover {
@@ -73,7 +84,7 @@
   transition: background-color 0.3s ease;
 }
 
-/* =================== BACK BUTTON =================== */
+/* ========== BACK BUTTON ========== */
 .backButtonWrapper {
   margin-top: 32px;
   display: flex;
@@ -100,8 +111,7 @@
   background-color: #f0f0f0;
 }
 
-
-/* =================== RESPONSIVE =================== */
+/* ========== RESPONSIVE ========== */
 @media screen and (max-width: 768px) {
   .header h1 {
     font-size: 22px;
@@ -113,11 +123,72 @@
 
   .table {
     font-size: 13px;
-    min-width: 100%;
   }
 
   .backButton {
     font-size: 13px;
     padding: 8px 14px;
   }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+/* ========== INPUT & BUTTON ========== */
+.noteInput {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.saveButton,
+.deleteButton {
+  display: inline-block;
+  min-width: 64px; /* mencegah terlalu sempit */
+  height: auto;
+  line-height: 1.2;
+  font-size: 14px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;  /* pastikan teks tidak membungkus */
+  box-sizing: border-box;
+}
+
+.saveButton {
+  background-color: var(--color-primary-4);
+  color: white;
+}
+
+.saveButton:hover {
+  background-color: var(--color-primary-3);
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #b02a37;
+}
+
+
+.errorText {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ========== BUTTON GROUP (Simpan + Hapus) ========== */
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
 }

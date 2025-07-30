@@ -20,6 +20,9 @@ const AdminAppointment = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [newDate, setNewDate] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
+  const [newStartDate, setNewStartDate] = useState("");
+  const [newEndDate, setNewEndDate] = useState("");
+  const [feedbackAdmin, setFeedbackAdmin] = useState("");
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -105,50 +108,59 @@ const AdminAppointment = () => {
     }
   };
 
-  const handleModalSubmit = async () => {
-    if (!newDate) {
-      toast.error("Tanggal baru harus diisi.");
-      return;
-    }
+ const handleModalSubmit = async () => {
+  if (!newStartDate || !newEndDate) {
+    toast.error("Rentang tanggal harus diisi.");
+    return;
+  }
 
-    const today = new Date().toISOString().split("T")[0];
-    if (newDate < today) {
-      toast.error("Tanggal tidak boleh di masa lalu.");
-      return;
-    }
+  if (newEndDate < newStartDate) {
+    toast.error("Tanggal akhir tidak boleh sebelum tanggal awal.");
+    return;
+  }
 
-    try {
-      await axios.put(`${API_BASE_URL}/Appointment/update/${selectedAppointment.id}`, {
-        nama_lengkap: selectedAppointment.nama_lengkap,
-        no_registrasi: selectedAppointment.no_registrasi,
-        no_rekam_medis: selectedAppointment.no_rekam_medis,
-        id_dokter: selectedAppointment.id_dokter || 1,
-        tanggal: newDate,
-        status: "disetujui",
-        keterangan:
-          selectedAppointment.status === "request"
-            ? "Permintaan awal disetujui dengan tanggal baru"
-            : "Jadwal direschedule dan disetujui"
-      });
+  try {
+    const isRequest = selectedAppointment.status === "request";
 
-      const updated = appointments.map((a) =>
-        a.id === selectedAppointment.id
-          ? { ...a, status: "disetujui", tanggal: newDate }
-          : a
-      );
-      setAppointments(updated);
-      updateNotifications(
-        `Janji temu pasien ${selectedAppointment.nama_lengkap} disetujui untuk tanggal ${newDate}.`
-      );
-      toast.success("Jadwal berhasil diperbarui.");
-      setShowModal(false);
-      setNewDate("");
-    } catch (error) {
-      toast.error("Gagal memperbarui jadwal.");
-    }
-  };
+    await axios.put(`${API_BASE_URL}/Appointment/update/${selectedAppointment.id}`, {
+      nama_lengkap: selectedAppointment.nama_lengkap,
+      no_registrasi: selectedAppointment.no_registrasi,
+      no_rekam_medis: selectedAppointment.no_rekam_medis,
+      id_dokter: selectedAppointment.id_dokter || 1,
+      tanggal: newStartDate,
+      tanggal_akhir: newEndDate,
+      status: "disetujui",
+      keterangan: isRequest
+        ? "Permintaan awal disetujui dengan rentang tanggal baru"
+        : "Jadwal direschedule dan disetujui",
+      feedback_admin: feedbackAdmin, // simpan apa pun yang diketik admin
+    });
 
+    const updated = appointments.map((a) =>
+      a.id === selectedAppointment.id
+        ? {
+            ...a,
+            status: "disetujui",
+            tanggal: newStartDate,
+            tanggal_akhir: newEndDate,
+            feedback_admin: feedbackAdmin,
+          }
+        : a
+    );
 
+    setAppointments(updated);
+    updateNotifications(
+      `Janji temu pasien ${selectedAppointment.nama_lengkap} disetujui dari ${newStartDate} sampai ${newEndDate}.`
+    );
+    toast.success("Jadwal berhasil diperbarui.");
+    setShowModal(false);
+    setNewStartDate("");
+    setNewEndDate("");
+    setFeedbackAdmin("");
+  } catch (error) {
+    toast.error("Gagal memperbarui jadwal.");
+  }
+};
 
   const updateNotifications = (msg) => {
     setNotifications((prev) => [...prev, { id: Date.now(), message: msg }]);
@@ -176,50 +188,47 @@ const AdminAppointment = () => {
           </select>
         </div>
 
-
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Nama</th>
-            <th>Rekam Medis</th>
-            <th>Tanggal</th>
-            <th>Status</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAppointments.length > 0 ? (
-            filteredAppointments.map((a) => (
-              <tr
-                key={a.id}
-                onClick={() => handleRowClick(a)}
-                className={selectedRow === a.id ? styles.selected : ""}
-              >
-                <td>{a.nama_lengkap}</td>
-                <td>{a.no_rekam_medis}</td>
-                <td>{a.tanggal}</td>
-                <td>{a.status}</td>
-                <td>
-                  {["request", "reschedule"].includes(a.status) && (
-                    <div className={styles.actionButtonContainer}>
-                      <button onClick={() => handleApprove(a)} className={styles.approveButton}>
-                        Setujui
-                      </button>
-                      <button onClick={() => handleReject(a.id)} className={styles.rejectButton}>
-                        Tolak
-                      </button>
-                    </div>
-                  )}
-                </td>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Rekam Medis</th>
+                <th>Tanggal</th>
+                <th>Keterangan Dokter</th>
+                <th>Status</th>
+                <th>Aksi</th>
+                <th>Feedback Admin</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">Tidak ada janji temu.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {filteredAppointments.length > 0 ? (
+                filteredAppointments.map((a) => (
+                  <tr key={a.id} onClick={() => handleRowClick(a)} className={selectedRow === a.id ? styles.selected : ""}>
+                    <td>{a.nama_lengkap}</td>
+                    <td>{a.no_rekam_medis}</td>
+                    <td>{a.tanggal_akhir ? `${a.tanggal} s.d. ${a.tanggal_akhir}` : a.tanggal}</td>
+                    <td>{a.keterangan || "-"}</td>
+                    <td>{a.status}</td>
+                    <td>
+                      {["request", "reschedule"].includes(a.status) && (
+                        <div className={styles.actionButtonContainer}>
+                          <button onClick={() => handleApprove(a)} className={styles.approveButton}>Setujui</button>
+                          <button onClick={() => handleReject(a.id)} className={styles.rejectButton}>Tolak</button>
+                        </div>
+                      )}
+                    </td>
+                    <td>{a.feedback_admin || "-"}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7">Tidak ada janji temu.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
       <section className={styles.notificationSection}>
         <h2>Catatan</h2>
@@ -245,11 +254,25 @@ const AdminAppointment = () => {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h3>Pilih Tanggal Baru</h3>
+            <h3>Setujui Rentang Tanggal & Feedback</h3>
+            <label>Mulai:</label>
             <input
               type="date"
-              value={newDate}
-              onChange={(e) => setNewDate(e.target.value)}
+              value={newStartDate}
+              onChange={(e) => setNewStartDate(e.target.value)}
+            />
+            <label>Selesai:</label>
+            <input
+              type="date"
+              value={newEndDate}
+              onChange={(e) => setNewEndDate(e.target.value)}
+            />
+            <label>Feedback Admin:</label>
+            <textarea
+              value={feedbackAdmin}
+              onChange={(e) => setFeedbackAdmin(e.target.value)}
+              placeholder="Misalnya: Kamar 310"
+              rows={3}
             />
             <div className={styles.modalActions}>
               <button onClick={handleModalSubmit} className={styles.submitButton}>
@@ -262,6 +285,7 @@ const AdminAppointment = () => {
           </div>
         </div>
       )}
+
 
       <button className={styles.backButton} onClick={() => navigate(-1)}>← Kembali</button>
 
